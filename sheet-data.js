@@ -48,7 +48,7 @@ const SHEET_CONFIG = {
   // Paste your "Publish to web" CSV URL between the quotes below.
   // Leave it as an empty string "" to run the site with placeholder /
   // no images while you're still setting the sheet up.
-  SHEET_CSV_URL: "",
+  SHEET_CSV_URL: "https://docs.google.com/spreadsheets/d/1kDLthHFXCnXM68woeCH5gTfvTmCf9hTjqIZjzCPGiZQ/edit?usp=sharing",
 
   // How long (in minutes) to cache the fetched sheet in the visitor's
   // browser (localStorage) before re-fetching. Set to 0 to always fetch
