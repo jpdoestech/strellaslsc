@@ -1,0 +1,939 @@
+/* ============================================================================
+   WEASI SITE STYLESHEET
+   ----------------------------------------------------------------------------
+   Organized in this order:
+   1. Design tokens (colors, type, spacing) -- edit these to re-theme the site
+   2. Reset / base
+   3. Layout helpers
+   4. Header / nav
+   5. Section-by-section styles (hero, about, services, gallery, branches,
+      board, philosophy, contact, footer)
+   6. Responsive breakpoints (mobile-first; desktop overrides at the bottom
+      of each section AND in the final media-query block for global tweaks)
+   ============================================================================ */
+
+/* ---------------------------------------------------------------------------
+   1. DESIGN TOKENS
+   To re-theme the whole site (new client, new brand), you mostly only need
+   to change the values in this block.
+--------------------------------------------------------------------------- */
+:root {
+  /* Colors */
+  --ink: #10233a;        /* deep navy -- header bg, dark sections, primary text on light */
+  --sea: #1c5566;        /* brand teal-blue -- links, icons, section accents */
+  --gold: #e3a23c;       /* signature accent -- CTAs, highlights, active states. Use sparingly */
+  --paper: #f6f4ef;      /* warm off-white -- page background */
+  --paper-dim: #efece3;  /* slightly darker paper -- alternating section bg */
+  --charcoal: #20251f;   /* body text color */
+  --line: #ddd8cc;       /* hairline borders / dividers */
+  --white: #ffffff;
+
+  /* Type */
+  --font-display: "Fraunces", Georgia, serif;         /* headlines */
+  --font-body: "IBM Plex Sans", Arial, sans-serif;     /* body copy, nav, buttons */
+  --font-mono: "IBM Plex Mono", "Courier New", monospace; /* eyebrows, labels, stats */
+
+  /* Spacing scale */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 2rem;
+  --space-lg: 4rem;
+  --space-xl: 7rem;
+
+  /* Layout */
+  --max-width: 1180px;
+  --radius: 4px;
+}
+
+/* ---------------------------------------------------------------------------
+   2. RESET / BASE
+--------------------------------------------------------------------------- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--charcoal);
+  background: var(--paper);
+  line-height: 1.6;
+  font-size: 16px;
+  overflow-x: hidden; /* guards against any section briefly overflowing on small screens */
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  line-height: 1.15;
+  font-weight: 600;
+}
+
+button, input, textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Visible keyboard focus everywhere -- accessibility baseline */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------------------------
+   3. LAYOUT HELPERS
+--------------------------------------------------------------------------- */
+.wrap {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+}
+
+.section {
+  padding: var(--space-xl) 0;
+}
+
+.section--dim {
+  background: var(--paper-dim);
+}
+
+.section--dark {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.section--dark h2,
+.section--dark h3,
+.section--dark h4 {
+  color: var(--white);
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: inline-block;
+  margin-bottom: var(--space-sm);
+}
+
+.section-head {
+  max-width: 640px;
+  margin-bottom: var(--space-lg);
+}
+
+.section-head h2 {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  margin-bottom: var(--space-sm);
+}
+
+.section-head p {
+  color: #4b564f;
+  font-size: 1.05rem;
+}
+
+.section--dark .section-head p {
+  color: #cfd8d5;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.9rem 1.6rem;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn--gold {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+.btn--gold:hover {
+  background: #f0b25a;
+}
+
+.btn--outline {
+  border-color: currentColor;
+  color: inherit;
+  background: transparent;
+}
+
+.btn--outline:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ---------------------------------------------------------------------------
+   4. HEADER / NAV
+--------------------------------------------------------------------------- */
+.topbar {
+  background: var(--ink);
+  color: #b9c3cc;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.topbar .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-xs);
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.topbar a:hover {
+  color: var(--gold);
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(246, 244, 239, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+
+.site-header .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--space-sm);
+  padding-bottom: var(--space-sm);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.15rem;
+  color: var(--ink);
+}
+
+.brand-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--sea);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.brand small {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: var(--sea);
+  text-transform: uppercase;
+}
+
+.nav-links {
+  display: flex;
+  gap: var(--space-md);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.nav-links a {
+  position: relative;
+  padding: 0.25rem 0;
+}
+
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0;
+  height: 2px;
+  background: var(--gold);
+  transition: width 0.2s ease;
+}
+
+.nav-links a:hover::after,
+.nav-links a.is-active::after {
+  width: 100%;
+}
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  position: relative;
+}
+
+.nav-toggle span,
+.nav-toggle span::before,
+.nav-toggle span::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  height: 2px;
+  background: var(--ink);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.nav-toggle span {
+  top: 19px;
+}
+
+.nav-toggle span::before {
+  top: -7px;
+}
+
+.nav-toggle span::after {
+  top: 7px;
+}
+
+.nav-toggle.is-open span {
+  background: transparent;
+}
+
+.nav-toggle.is-open span::before {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.nav-toggle.is-open span::after {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ---------------------------------------------------------------------------
+   5a. HERO
+--------------------------------------------------------------------------- */
+.hero {
+  position: relative;
+  min-height: 88vh;
+  display: flex;
+  align-items: center;
+  color: var(--white);
+  overflow: hidden;
+  background: linear-gradient(160deg, var(--ink) 0%, #0b1a2c 60%, #08131f 100%);
+}
+
+/* Hero background photo -- swapped by JS from the Google Sheet if available,
+   otherwise falls back to this CSS gradient only (no photo needed to ship). */
+.hero-photo {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.35;
+  transition: opacity 0.6s ease;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(16, 35, 58, 0.2) 0%, rgba(16, 35, 58, 0.95) 100%);
+}
+
+.hero .wrap {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: var(--space-lg);
+  align-items: end;
+  padding-top: var(--space-xl);
+  padding-bottom: var(--space-lg);
+}
+
+.hero-copy h1 {
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  color: var(--white);
+  margin-bottom: var(--space-md);
+}
+
+.hero-copy h1 em {
+  font-style: normal;
+  color: var(--gold);
+}
+
+.hero-copy p {
+  font-size: 1.1rem;
+  color: #d8dee1;
+  max-width: 46ch;
+  margin-bottom: var(--space-md);
+}
+
+.hero-actions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.hero-stats {
+  display: grid;
+  gap: var(--space-md);
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  padding-left: var(--space-md);
+}
+
+.hero-stat .num {
+  font-family: var(--font-mono);
+  font-size: 2rem;
+  color: var(--gold);
+  display: block;
+}
+
+.hero-stat .label {
+  font-size: 0.85rem;
+  color: #b9c3cc;
+}
+
+/* ---------------------------------------------------------------------------
+   5b. ABOUT / SERVICES
+--------------------------------------------------------------------------- */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+  align-items: start;
+}
+
+.about-copy p {
+  margin-bottom: var(--space-sm);
+  color: #3c463f;
+}
+
+.service-list {
+  display: grid;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.service-item {
+  background: var(--paper);
+  padding: var(--space-sm) var(--space-md);
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+}
+
+.service-item .tag {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--sea);
+  flex-shrink: 0;
+  width: 2.5rem;
+}
+
+/* ---------------------------------------------------------------------------
+   5c. GALLERY (populated dynamically from Google Sheets -- see js/sheet-data.js)
+--------------------------------------------------------------------------- */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-sm);
+}
+
+.gallery-grid figure {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--paper-dim); /* shows while the image loads */
+}
+
+.gallery-grid img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.gallery-grid figure:hover img {
+  transform: scale(1.06);
+}
+
+.gallery-grid figcaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0.6rem 0.8rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--white);
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.65), transparent);
+}
+
+.gallery-empty,
+.branch-photos-empty {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: #8a8f86;
+  padding: var(--space-md);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+}
+
+/* ---------------------------------------------------------------------------
+   5d. OUR PEOPLE
+--------------------------------------------------------------------------- */
+.people-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+}
+
+.people-card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+}
+
+.people-card .icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--sea);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-sm);
+  font-family: var(--font-mono);
+}
+
+/* ---------------------------------------------------------------------------
+   5e. BRANCHES (network map signature element + list)
+--------------------------------------------------------------------------- */
+.branches-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: var(--space-lg);
+  align-items: center;
+}
+
+.branch-map {
+  background: #0e2e39;
+  border-radius: var(--radius);
+  padding: var(--space-md);
+}
+
+.branch-map svg {
+  width: 100%;
+  height: auto;
+}
+
+.branch-node {
+  fill: var(--gold);
+  stroke: #0e2e39;
+  stroke-width: 2;
+}
+
+.branch-node-pulse {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 1.5;
+  opacity: 0;
+  animation: pulse 2.6s ease-out infinite;
+}
+
+@keyframes pulse {
+  0% { r: 4; opacity: 0.6; }
+  100% { r: 16; opacity: 0; }
+}
+
+.branch-line {
+  stroke: rgba(227, 162, 60, 0.35);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.branch-label {
+  fill: #d8dee1;
+  font-family: var(--font-mono);
+  font-size: 9px;
+}
+
+.branch-list {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.branch-entry {
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.branch-entry h4 {
+  font-size: 1rem;
+  margin-bottom: 0.2rem;
+}
+
+.branch-entry .kind {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.branch-entry p {
+  color: #4b564f;
+  font-size: 0.92rem;
+}
+
+.branch-photos {
+  margin-top: var(--space-lg);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-sm);
+}
+
+.branch-photos img {
+  border-radius: var(--radius);
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+/* ---------------------------------------------------------------------------
+   5f. BOARD OF DIRECTORS
+--------------------------------------------------------------------------- */
+.board-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+}
+
+.board-card {
+  text-align: left;
+  padding-top: var(--space-sm);
+  border-top: 2px solid var(--gold);
+}
+
+.board-card h4 {
+  font-size: 1.05rem;
+  margin-bottom: 0.2rem;
+}
+
+.board-card .role {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--sea);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ---------------------------------------------------------------------------
+   5g. CORPORATE PHILOSOPHY (real 3-item sequence -- numbering is meaningful)
+--------------------------------------------------------------------------- */
+.philosophy-list {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.philosophy-item {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: var(--space-md);
+}
+
+.philosophy-item .num {
+  font-family: var(--font-mono);
+  font-size: 2.6rem;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.philosophy-item h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: var(--white);
+}
+
+.philosophy-item p {
+  color: #cfd8d5;
+}
+
+/* ---------------------------------------------------------------------------
+   5h. CONTACT
+--------------------------------------------------------------------------- */
+.contact-layout {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: var(--space-lg);
+}
+
+.contact-info .item {
+  margin-bottom: var(--space-md);
+}
+
+.contact-info .label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--sea);
+  margin-bottom: 0.3rem;
+}
+
+.contact-form {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.contact-form label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  display: block;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--white);
+}
+
+.contact-form textarea {
+  min-height: 130px;
+  resize: vertical;
+}
+
+.form-note {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: #8a8f86;
+}
+
+/* ---------------------------------------------------------------------------
+   5i. FOOTER
+--------------------------------------------------------------------------- */
+.site-footer {
+  background: #0b1a2c;
+  color: #9aa6ac;
+  padding: var(--space-lg) 0 var(--space-md);
+  font-size: 0.9rem;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.footer-grid h4 {
+  color: var(--white);
+  font-size: 0.95rem;
+  margin-bottom: var(--space-sm);
+}
+
+.footer-grid ul li {
+  margin-bottom: 0.4rem;
+}
+
+.footer-grid ul li a:hover {
+  color: var(--gold);
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: var(--space-sm);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+}
+
+/* ---------------------------------------------------------------------------
+   6. RESPONSIVE BREAKPOINTS (mobile-first cascade)
+   Everything above already works down to small phones because widths are
+   fluid; the rules below adjust GRID layouts, which don't collapse on
+   their own.
+--------------------------------------------------------------------------- */
+
+/* Tablets and small laptops */
+@media (max-width: 960px) {
+  .hero .wrap {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+
+  .hero-stats {
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding-left: 0;
+    padding-top: var(--space-md);
+    grid-auto-flow: column;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .about-grid,
+  .branches-layout,
+  .contact-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .people-grid,
+  .board-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Phones */
+@media (max-width: 640px) {
+  :root {
+    --space-xl: 4rem;
+    --space-lg: 2.5rem;
+  }
+
+  .nav-links {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--paper);
+    flex-direction: column;
+    padding: var(--space-lg) var(--space-md);
+    gap: var(--space-md);
+    font-size: 1.1rem;
+    transform: translateX(100%);
+    transition: transform 0.25s ease;
+    overflow-y: auto;
+  }
+
+  .nav-links.is-open {
+    transform: translateX(0);
+  }
+
+  .nav-toggle {
+    display: block;
+  }
+
+  .hero {
+    min-height: auto;
+    padding-top: var(--space-lg);
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hero-stats {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: var(--space-sm);
+  }
+
+  .hero-stat .num {
+    font-size: 1.4rem;
+  }
+
+  .gallery-grid,
+  .branch-photos {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .people-grid,
+  .board-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .philosophy-item {
+    grid-template-columns: 1fr;
+    gap: var(--space-xs);
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+  }
+
+  .topbar .wrap {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Very large screens: cap line-length growth so text doesn't feel lost */
+@media (min-width: 1600px) {
+  :root {
+    --max-width: 1320px;
+  }
+}

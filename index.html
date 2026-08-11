@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Work Experts &amp; Allied Services, Inc. (WEASI) &mdash; Manpower &amp; Staffing, Davao</title>
+<meta name="description" content="Work Experts and Allied Services, Inc. (WEASI) provides manpower, secretarial, technical, medical and agricultural staffing services across Mindanao and Visayas.">
+
+<!--
+  ============================================================================
+  HOW THIS SITE IS ORGANIZED (read this first)
+  ============================================================================
+  - index.html   : all page content and structure (this file)
+  - css/style.css: all visual styling + responsive rules. Colors/fonts are
+                    defined once at the top as CSS variables -- change them
+                    there to re-theme the whole site.
+  - js/main.js        : nav toggle, active-link highlight, contact form
+  - js/sheet-data.js  : pulls images from your Google Sheet -- see the big
+                          comment block at the top of that file for setup
+                          steps. This is the "database of images" you asked
+                          about.
+
+  Every content section below has a short "EDIT HERE" comment marking what
+  you'd change for real content (text, phone numbers, addresses, names).
+  Sections marked "id="...-gallery"" or "...target"" are filled in
+  automatically by js/sheet-data.js from your Google Sheet -- you do not
+  edit images directly in this file.
+  ============================================================================
+-->
+
+<!-- Google Fonts: Fraunces (headlines), IBM Plex Sans (body), IBM Plex Mono (labels) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- =========================== TOP UTILITY BAR =========================== -->
+<!-- EDIT HERE: address / phone / email / social links -->
+<div class="topbar">
+  <div class="wrap">
+    <span>129-A Brgy. 21-C (Pob.), Quezon Boulevard, Davao City, Philippines &nbsp;|&nbsp; (082) 331-4878 &nbsp;|&nbsp; dvo@workexpertsandalliedservices.com</span>
+    <span>
+      <a href="#" aria-label="Facebook">Facebook</a> &nbsp;
+      <a href="#" aria-label="Instagram">Instagram</a>
+    </span>
+  </div>
+</div>
+
+<!-- =============================== HEADER ================================ -->
+<header class="site-header">
+  <div class="wrap">
+    <a href="#top" class="brand">
+      <!-- EDIT HERE: replace the circle with an <img> tag once you have a logo file -->
+      <span class="brand-mark" aria-hidden="true">WE</span>
+      <span>
+        Work Experts
+        <small>&amp; Allied Services, Inc.</small>
+      </span>
+    </a>
+
+    <nav aria-label="Primary">
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#people">Our People</a></li>
+        <li><a href="#branches">Branches</a></li>
+        <li><a href="#board">Board</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- =============================== HERO ================================ -->
+  <section class="hero">
+    <!-- Filled from your Google Sheet (category = "hero"); falls back to the
+         CSS gradient in style.css if the sheet has no hero row yet. -->
+    <div class="hero-photo" id="hero-photo-target"></div>
+
+    <div class="wrap">
+      <div class="hero-copy">
+        <span class="eyebrow">Manpower &amp; Staffing &middot; Mindanao &amp; Visayas</span>
+        <!-- EDIT HERE: headline / intro copy -->
+        <h1>We find the <em>right people</em> for your company.</h1>
+        <p>Since 2004, WEASI has connected screened, trained, and compliant personnel with businesses across Davao, Zamboanga, and General Santos &mdash; manpower, clerical, technical, medical, and agricultural staffing built on trust.</p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn btn--gold">Get in touch</a>
+          <a href="#services" class="btn btn--outline">See our services</a>
+        </div>
+      </div>
+
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="num">2004</span>
+          <span class="label">Founded, Davao City</span>
+        </div>
+        <div class="hero-stat">
+          <span class="num">6</span>
+          <span class="label">Branches across Mindanao &amp; Visayas</span>
+        </div>
+        <div class="hero-stat">
+          <span class="num">&#8369;12M</span>
+          <span class="label">Authorized capital stock</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================== ABOUT ================================ -->
+  <section class="section" id="about">
+    <div class="wrap about-grid">
+      <div>
+        <span class="eyebrow">About WEASI</span>
+        <h2>A staffing partner built on two decades of trust</h2>
+      </div>
+      <!-- EDIT HERE: company description -->
+      <div class="about-copy">
+        <p>Work Experts and Allied Services, Inc. is a corporation with an authorized capital stock of twelve million pesos (&#8369;12,000,000.00), established on September 22, 2004.</p>
+        <p>Over the years we've built our reputation on more than maintenance staffing alone &mdash; we place trained, compliant personnel across a wide range of disciplines for clients throughout Mindanao and the Visayas.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== SERVICES =============================== -->
+  <section class="section section--dim" id="services">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">What we offer</span>
+        <h2>Services</h2>
+        <p>Every placement is screened, trained, and matched to the specific needs of the client company.</p>
+      </div>
+
+      <!-- EDIT HERE: add, remove, or reword service lines -->
+      <div class="service-list">
+        <div class="service-item"><span class="tag">01</span><span>Manpower services &mdash; trade &amp; utility helpers</span></div>
+        <div class="service-item"><span class="tag">02</span><span>Secretarial &amp; clerical services</span></div>
+        <div class="service-item"><span class="tag">03</span><span>Technical services</span></div>
+        <div class="service-item"><span class="tag">04</span><span>Medical services</span></div>
+        <div class="service-item"><span class="tag">05</span><span>Agricultural services</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================== PHOTO GALLERY (from Google Sheet) =================== -->
+  <section class="section" id="gallery">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">In the field</span>
+        <h2>Our people at work</h2>
+        <p>Managed entirely from a Google Sheet &mdash; add a row, the photo shows up here on next page load.</p>
+      </div>
+      <!-- Filled by js/sheet-data.js (category = "gallery") -->
+      <div class="gallery-grid" id="main-gallery">
+        <p class="gallery-empty">No images yet &mdash; add rows to the Google Sheet with category "gallery" to fill this section.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================== PEOPLE ================================ -->
+  <section class="section section--dim" id="people">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Our People</span>
+        <h2>Our best asset is our people</h2>
+        <p>We invest continuously in training and safety so our clients can count on every placement we make.</p>
+      </div>
+
+      <!-- EDIT HERE: each card is one program/benefit -->
+      <div class="people-grid">
+        <div class="people-card">
+          <div class="icon" aria-hidden="true">01</div>
+          <h4>Training &amp; orientation</h4>
+          <p>Regular orientations, seminars, and refresher trainings keep our personnel sharp and job-ready.</p>
+        </div>
+        <div class="people-card">
+          <div class="icon" aria-hidden="true">02</div>
+          <h4>Annual medical exams</h4>
+          <p>Every employee undergoes annual medical examination as part of our commitment to their wellbeing.</p>
+        </div>
+        <div class="people-card">
+          <div class="icon" aria-hidden="true">03</div>
+          <h4>Incentive programs</h4>
+          <p>We recognize strong performance and tenure through ongoing incentive programs.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== BRANCHES ================================ -->
+  <section class="section section--dark" id="branches">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Where we operate</span>
+        <h2>Six branches across Mindanao &amp; Visayas</h2>
+        <p>Strategically placed so we can respond to clients quickly, wherever they are.</p>
+      </div>
+
+      <div class="branches-layout">
+        <!-- Signature element: stylized network diagram of the branch
+             locations (not a literal geographic map -- purely illustrative
+             of the connections between offices). Positions are set by hand
+             in the SVG below; edit the <circle>/<text> coordinates if you
+             add or remove a branch. -->
+        <div class="branch-map">
+          <svg viewBox="0 0 320 300" role="img" aria-label="Diagram of WEASI's six branch offices connected to the head office in Davao City">
+            <!-- connecting lines, head office (Davao) as hub -->
+            <line class="branch-line" x1="160" y1="150" x2="60" y2="60" />
+            <line class="branch-line" x1="160" y1="150" x2="120" y2="230" />
+            <line class="branch-line" x1="160" y1="150" x2="230" y2="80" />
+            <line class="branch-line" x1="160" y1="150" x2="260" y2="200" />
+            <line class="branch-line" x1="160" y1="150" x2="70" y2="180" />
+
+            <!-- Davao (head office) -->
+            <circle class="branch-node-pulse" cx="160" cy="150" r="4" />
+            <circle class="branch-node" cx="160" cy="150" r="7" />
+            <text class="branch-label" x="172" y="153">Davao (Head Office)</text>
+
+            <!-- El Salvador -->
+            <circle class="branch-node" cx="60" cy="60" r="5" />
+            <text class="branch-label" x="10" y="48">El Salvador</text>
+
+            <!-- Darong -->
+            <circle class="branch-node" cx="120" cy="230" r="5" />
+            <text class="branch-label" x="80" y="250">Darong</text>
+
+            <!-- Gensan -->
+            <circle class="branch-node" cx="230" cy="80" r="5" />
+            <text class="branch-label" x="240" y="75">Gensan</text>
+
+            <!-- Zamboanga -->
+            <circle class="branch-node" cx="260" cy="200" r="5" />
+            <text class="branch-label" x="235" y="222">Zamboanga</text>
+
+            <!-- Ulas -->
+            <circle class="branch-node" cx="70" cy="180" r="5" />
+            <text class="branch-label" x="10" y="200">Ulas</text>
+          </svg>
+        </div>
+
+        <!-- EDIT HERE: branch names / addresses -->
+        <div class="branch-list">
+          <div class="branch-entry">
+            <span class="kind">Head Office</span>
+            <h4>Davao</h4>
+            <p>129-A, Brgy. 21-C, Quezon Boulevard, Davao City</p>
+          </div>
+          <div class="branch-entry">
+            <span class="kind">Satellite Office</span>
+            <h4>El Salvador</h4>
+            <p>Zone 2, PSB, Bolobolo, El Salvador City, Misamis Oriental</p>
+          </div>
+          <div class="branch-entry">
+            <h4>Gensan</h4>
+            <p>3rd Flr., CHM Bldg., 46-A Mansanitas St., General Santos City</p>
+          </div>
+          <div class="branch-entry">
+            <h4>Darong</h4>
+            <p>Almendras Relocation, Lower Quinocol, Darong, Sta. Cruz, Davao del Sur</p>
+          </div>
+          <div class="branch-entry">
+            <h4>Zamboanga</h4>
+            <p>Unit 5, 2nd Flr., Emilio Enriquez Bldg., MCLL Hwy., Tetuan, Zamboanga City</p>
+          </div>
+          <div class="branch-entry">
+            <h4>Ulas</h4>
+            <p>Rebecca Arcade, Door 4, Km. 8, Petron Gasoline Station, Mc Arthur Hwy., Ulas, Davao City</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filled by js/sheet-data.js (category = "branch") -->
+      <div class="branch-photos" id="branch-photo-grid">
+        <p class="branch-photos-empty">No branch photos yet &mdash; add rows with category "branch" in the Google Sheet.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================== BOARD OF DIRECTORS ========================== -->
+  <section class="section" id="board">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Leadership</span>
+        <h2>Board of Directors</h2>
+        <p>Three of our five board members are retired HR practitioners, now actively engaged in running the company.</p>
+      </div>
+
+      <!-- EDIT HERE: names / roles -->
+      <div class="board-grid">
+        <div class="board-card">
+          <h4>Wilfredo M. Mendiola</h4>
+          <span class="role">Corporate President</span>
+        </div>
+        <div class="board-card">
+          <h4>Atty. Art O. Tan</h4>
+          <span class="role">Board Member</span>
+        </div>
+        <div class="board-card">
+          <h4>Leonardo B. Panuncialman Sr.</h4>
+          <span class="role">Board Member</span>
+        </div>
+        <div class="board-card">
+          <h4>Buenaventura B. Alvarez</h4>
+          <span class="role">Board Member</span>
+        </div>
+        <div class="board-card">
+          <h4>Joseph I. Sasin</h4>
+          <span class="role">Board Member</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================== CORPORATE PHILOSOPHY ========================= -->
+  <section class="section section--dark" id="philosophy">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Corporate Philosophy</span>
+        <h2>Three principles that guide every placement</h2>
+      </div>
+
+      <!-- EDIT HERE: philosophy copy -->
+      <div class="philosophy-list">
+        <div class="philosophy-item">
+          <span class="num">1</span>
+          <div>
+            <h3>We find the right people for your company</h3>
+            <p>We take time to understand each client's business needs and match them against our experience in the industry, so every placement is screened, trained, and properly documented.</p>
+          </div>
+        </div>
+        <div class="philosophy-item">
+          <span class="num">2</span>
+          <div>
+            <h3>We believe our best asset is our people</h3>
+            <p>We invest in our employees through training, incentives, and team-building &mdash; and work with clients to provide a healthy, safe working environment.</p>
+          </div>
+        </div>
+        <div class="philosophy-item">
+          <span class="num">3</span>
+          <div>
+            <h3>We value trust and partnership</h3>
+            <p>Beyond staffing, we aim to build long-term partnerships with our clients, cultivating trust and generating lasting value.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================== CONTACT ================================ -->
+  <section class="section" id="contact">
+    <div class="wrap contact-layout">
+      <div class="contact-info">
+        <span class="eyebrow">Contact Us</span>
+        <h2>Give the best result for you is our satisfaction</h2>
+
+        <!-- EDIT HERE: contact details -->
+        <div class="item">
+          <div class="label">Address</div>
+          <div>129-A Brgy. 21-C (Pob.), Quezon Boulevard, Davao City, Philippines</div>
+        </div>
+        <div class="item">
+          <div class="label">Telephone</div>
+          <div>(082) 331-4878</div>
+        </div>
+        <div class="item">
+          <div class="label">Email</div>
+          <div>dvo@workexpertsandalliedservices.com</div>
+        </div>
+      </div>
+
+      <!--
+        CONTACT FORM
+        Set action="" below to your Formspree endpoint (https://formspree.io
+        has a free tier -- sign up, create a form, copy the endpoint URL,
+        e.g. https://formspree.io/f/abcdwxyz) so submissions land in your
+        inbox with no backend server required. Until then, the form falls
+        back to opening the visitor's email client instead (see js/main.js).
+      -->
+      <form class="contact-form" id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        <div>
+          <label for="name">Name *</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div>
+          <label for="email">Email *</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div>
+          <label for="subject">Subject</label>
+          <input type="text" id="subject" name="subject">
+        </div>
+        <div>
+          <label for="message">Message</label>
+          <textarea id="message" name="message"></textarea>
+        </div>
+        <button type="submit" class="btn btn--gold">Send message</button>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<!-- =============================== FOOTER ================================ -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h4>Work Experts and Allied Services, Inc.</h4>
+        <p>Connecting screened, trained personnel with leading companies across Mindanao and the Visayas since 2004.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#branches">Branches</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Follow</h4>
+        <ul>
+          <li><a href="#">Facebook</a></li>
+          <li><a href="#">Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span id="current-year">2026</span> WEASI &mdash; Work Experts and Allied Services, Incorporated. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/sheet-data.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
