@@ -259,17 +259,12 @@ textarea:focus-visible {
 }
 
 .brand-mark {
-  width: 40px;
+  /* Now an <img> (the real logo icon extracted from the orientation deck)
+     rather than a text/circle placeholder. Height-constrained so it scales
+     with the header; width follows automatically to preserve the logo's
+     aspect ratio. */
   height: 40px;
-  border-radius: 50%;
-  background: var(--sea);
-  color: var(--white);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: 0.85rem;
+  width: auto;
   flex-shrink: 0;
 }
 

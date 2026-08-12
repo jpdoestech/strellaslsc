@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>STRELLAS &amp; Labor Service Cooperative (SLSC) &mdash; Manpower &amp; Staffing, Davao</title>
-<meta name="description" content="Strellas Labor Service Cooperative (SLSC) provides manpower, secretarial, technical, medical and agricultural staffing services across Mindanao and Visayas.">
+<title>Strellas Labor Service Cooperative (SLSC) &mdash; Davao City, Philippines</title>
+<meta name="description" content="Strellas Labor Service Cooperative (SLSC) is a CDA-registered labor service cooperative based in Davao City, supplying manpower and continuous employment to member-employees across Mindanao and the Visayas.">
 
 <!--
   ============================================================================
@@ -19,12 +19,31 @@
                           comment block at the top of that file for setup
                           steps. This is the "database of images" you asked
                           about.
+  - assets/logo-full.png : the real Strellas logo (mark + wordmark), pulled
+                             out of your orientation deck PDF, transparent
+                             background.
+  - assets/logo-icon.png : just the star mark cropped from the same logo,
+                             for tight spaces (nav bar, favicon).
 
-  Every content section below has a short "EDIT HERE" comment marking what
-  you'd change for real content (text, phone numbers, addresses, names).
-  Sections marked "id="...-gallery"" or "...target"" are filled in
-  automatically by js/sheet-data.js from your Google Sheet -- you do not
-  edit images directly in this file.
+  ----------------------------------------------------------------------------
+  CONTENT SOURCE NOTE (read this too)
+  ----------------------------------------------------------------------------
+  The About, history, org structure, officers, branches, vision/mission/
+  values, and membership sections below were rewritten from the actual
+  "Cooperative Orientation Deck" PDF you uploaded, replacing the earlier
+  placeholder WEASI-style copy. A few things worth double-checking before
+  you publish:
+    - The deck's "Office Addresses" slide says "Other 7 offices" but only
+      lists 6 -- I've listed the 6 that were legible. If there's a 7th
+      branch, add it to the "EDIT HERE: branch addresses" block below.
+    - The deck's "Core Values" slide (S / L / C) repeats "Labor Service
+      Quality" for both L and C, which looks like a typo in the original deck
+      rather than an intentional repeat. I've reproduced it as-is in a code
+      comment near that section -- confirm the real 3rd value with your
+      team and swap it in.
+    - No public contact email appears in the deck. I kept the address the
+      site already had (strellas_dvo@outlook.com) -- double check the
+      spelling/domain before publishing.
   ============================================================================
 -->
 
@@ -33,6 +52,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+<link rel="icon" type="image/png" href="assets/logo-icon.png">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -41,7 +61,7 @@
 <!-- EDIT HERE: address / phone / email / social links -->
 <div class="topbar">
   <div class="wrap">
-    <span>Room 214 H &amp; C Bldg., Alvarez Street, Brgy. 27-C (Pob.), Davao City, Philippines &nbsp;|&nbsp; (082) 331-4878 &nbsp;|&nbsp; strellas_dvo@outlook.com</span>
+    <span>2nd Flr., Room 214, H&amp;C Building, Alvarez Street (Pob.), Brgy. 27-C, Davao City, Philippines &nbsp;|&nbsp; (082) 331-4878 &nbsp;|&nbsp; strellas_dvo@outlook.com</span>
     <span>
       <a href="#" aria-label="Facebook">Facebook</a> &nbsp;
       <a href="#" aria-label="Instagram">Instagram</a>
@@ -53,10 +73,12 @@
 <header class="site-header">
   <div class="wrap">
     <a href="#top" class="brand">
-      <!-- EDIT HERE: replace the circle with an <img> tag once you have a logo file -->
-      <span class="brand-mark" aria-hidden="true">SLSC</span>
+      <!-- Real logo, extracted from the orientation deck (assets/logo-icon.png).
+           If you get an official standalone icon file later, just swap the
+           src below -- no other change needed. -->
+      <img src="assets/logo-icon.png" alt="" class="brand-mark" aria-hidden="true">
       <span>
-        S T R E L L A S
+        Strellas
         <small>Labor Service Cooperative</small>
       </span>
     </a>
@@ -64,10 +86,10 @@
     <nav aria-label="Primary">
       <ul class="nav-links">
         <li><a href="#about">About</a></li>
-        <li><a href="#services">Services</a></li>
-        <li><a href="#people">Our People</a></li>
+        <li><a href="#foundation">Vision &amp; Mission</a></li>
+        <li><a href="#membership">Membership</a></li>
         <li><a href="#branches">Branches</a></li>
-        <li><a href="#board">Board</a></li>
+        <li><a href="#board">Officers</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
     </nav>
@@ -88,28 +110,28 @@
 
     <div class="wrap">
       <div class="hero-copy">
-        <span class="eyebrow">Manpower &amp; Staffing &middot; Mindanao &amp; Visayas</span>
+        <span class="eyebrow">Labor Service Cooperative &middot; Mindanao &amp; Visayas</span>
         <!-- EDIT HERE: headline / intro copy -->
-        <h1>We find the <em>right people</em> for your company.</h1>
-        <p>Since 2009, STRELLAS has connected screened, trained, and compliant personnel with businesses across Davao, and Cagayan de Oro &mdash; manpower, clerical, technical, medical, and agricultural staffing built on trust.</p>
+        <h1>A law-abiding, reliable <em>labor service</em> partner.</h1>
+        <p>Registered with the Cooperative Development Authority in November 2008, Strellas Labor Service Cooperative supplies labor service and continuous employment opportunities to its member-employees across Mindanao and the Visayas.</p>
         <div class="hero-actions">
           <a href="#contact" class="btn btn--gold">Get in touch</a>
-          <a href="#services" class="btn btn--outline">See our services</a>
+          <a href="#foundation" class="btn btn--outline">Our vision &amp; mission</a>
         </div>
       </div>
 
       <div class="hero-stats">
         <div class="hero-stat">
-          <span class="num">2009</span>
-          <span class="label">Founded, Davao City</span>
+          <span class="num">2008</span>
+          <span class="label">Registered with the CDA</span>
         </div>
         <div class="hero-stat">
-          <span class="num">6</span>
-          <span class="label">Branches across Mindanao &amp; Visayas</span>
+          <span class="num">24</span>
+          <span class="label">Founding members</span>
         </div>
         <div class="hero-stat">
-          <span class="num">&#8369;12M</span>
-          <span class="label">Authorized capital stock</span>
+          <span class="num">7</span>
+          <span class="label">Branch offices, Head Office in Davao</span>
         </div>
       </div>
     </div>
@@ -119,33 +141,51 @@
   <section class="section" id="about">
     <div class="wrap about-grid">
       <div>
-        <span class="eyebrow">About STRELLAS</span>
-        <h2>A staffing partner built on two decades of trust</h2>
+        <span class="eyebrow">Cooperative Profile</span>
+        <h2>Built by 24 founding members, run by three retired HR practitioners</h2>
       </div>
       <!-- EDIT HERE: company description -->
       <div class="about-copy">
-        <p>Strellas Labor Service Cooperative is a corporation with an authorized capital stock of twelve million pesos (&#8369;12,000,000.00), established on December 28, 2009.</p>
-        <p>Over the years we've built our reputation on more than maintenance staffing alone &mdash; we place trained, compliant personnel across a wide range of disciplines for clients throughout Mindanao and the Visayas.</p>
+        <p>Strellas was organized by a group of twenty-four (24) professionals and residents of Davao City, and registered with the Cooperative Development Authority (CDA) in November 2008, then re-registered on December 28, 2009.</p>
+        <p>Its earliest operation started on March 16, 2009 in Cagayan de Oro, on banana farm operations in Talakag, Baungon, and Libona.</p>
+        <p>Management of the Cooperative sits with three (3) HR practitioners, now retired from their respective organizations and fully engaged with the Cooperative, while other cooperators assist with management, recruitment, and marketing.</p>
+        <p>On January 28, 2020, the CDA granted a Certificate of Registration of Amendment changing the Cooperative's name from <strong>Strellas Multi-Purpose Cooperative</strong> to <strong>Strellas Labor Service Cooperative</strong>.</p>
       </div>
     </div>
   </section>
 
-  <!-- ============================== SERVICES =============================== -->
-  <section class="section section--dim" id="services">
+  <!-- ============================ VISION / MISSION / VALUES =================== -->
+  <section class="section section--dim" id="foundation">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">What we offer</span>
-        <h2>Services</h2>
-        <p>Every placement is screened, trained, and matched to the specific needs of the client company.</p>
+        <span class="eyebrow">Our Foundation</span>
+        <h2>Vision, mission &amp; core values</h2>
       </div>
 
-      <!-- EDIT HERE: add, remove, or reword service lines -->
-      <div class="service-list">
-        <div class="service-item"><span class="tag">01</span><span>Manpower services &mdash; trade &amp; utility helpers</span></div>
-        <div class="service-item"><span class="tag">02</span><span>Secretarial &amp; clerical services</span></div>
-        <div class="service-item"><span class="tag">03</span><span>Technical services</span></div>
-        <div class="service-item"><span class="tag">04</span><span>Medical services</span></div>
-        <div class="service-item"><span class="tag">05</span><span>Agricultural services</span></div>
+      <div class="about-grid">
+        <div>
+          <h3 style="margin-bottom:0.5rem;">Vision</h3>
+          <!-- EDIT HERE: vision statement -->
+          <p style="color:#3c463f;">Strellas is a law-abiding and reliable Labor Service Provider in the Philippines, exemplifying fairness and justice in its dealing with clients, member-employees, and the community.</p>
+        </div>
+        <div>
+          <h3 style="margin-bottom:0.5rem;">Mission</h3>
+          <!-- EDIT HERE: mission statement -->
+          <p style="color:#3c463f;">To engage in the supply of labor service and ensure continuous employment opportunities for its member-employees.</p>
+        </div>
+      </div>
+
+      <!--
+        EDIT HERE: Core Values (S / L / C)
+        NOTE: the source deck lists "Labor Service Quality" for BOTH the "L"
+        and the "C" value, which reads like a typo in the original deck
+        rather than an intentional repeat. Confirm the real third value
+        with your team, then edit the third service-item below.
+      -->
+      <div class="service-list" style="margin-top:2rem;">
+        <div class="service-item"><span class="tag">S</span><span>Self-help and Self-responsibility, and Solidarity</span></div>
+        <div class="service-item"><span class="tag">L</span><span>Labor Service Quality</span></div>
+        <div class="service-item"><span class="tag">C</span><span>Labor Service Quality &mdash; confirm this value, likely a source typo</span></div>
       </div>
     </div>
   </section>
@@ -165,31 +205,31 @@
     </div>
   </section>
 
-  <!-- =============================== PEOPLE ================================ -->
-  <section class="section section--dim" id="people">
+  <!-- =============================== MEMBERSHIP ================================ -->
+  <section class="section section--dim" id="membership">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">Our People</span>
-        <h2>Our best asset is our people</h2>
-        <p>We invest continuously in training and safety so our clients can count on every placement we make.</p>
+        <span class="eyebrow">Cooperative Membership</span>
+        <h2>Two membership categories</h2>
+        <p>The Cooperative recognizes two membership categories for participation and capital build-up.</p>
       </div>
 
-      <!-- EDIT HERE: each card is one program/benefit -->
+      <!-- EDIT HERE: membership descriptions -->
       <div class="people-grid">
         <div class="people-card">
           <div class="icon" aria-hidden="true">01</div>
-          <h4>Training &amp; orientation</h4>
-          <p>Regular orientations, seminars, and refresher trainings keep our personnel sharp and job-ready.</p>
+          <h4>Regular Members</h4>
+          <p>Members who satisfy the prescribed pre-membership training, fees, and share capital requirements (at least &#8369;12,500, equivalent to 125 shares).</p>
         </div>
         <div class="people-card">
           <div class="icon" aria-hidden="true">02</div>
-          <h4>Annual medical exams</h4>
-          <p>Every employee undergoes annual medical examination as part of our commitment to their wellbeing.</p>
+          <h4>Associate Members</h4>
+          <p>Members who complete the membership education seminar, pay a one-time &#8369;500 fee, and join the capital build-up program.</p>
         </div>
         <div class="people-card">
           <div class="icon" aria-hidden="true">03</div>
-          <h4>Incentive programs</h4>
-          <p>We recognize strong performance and tenure through ongoing incentive programs.</p>
+          <h4>Continuous employment</h4>
+          <p>The Cooperative offers continuous employment to employee-members willing to be assigned to another location, plus share capital build-up support.</p>
         </div>
       </div>
     </div>
@@ -200,8 +240,8 @@
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">Where we operate</span>
-        <h2>Six branches across Mindanao &amp; Visayas</h2>
-        <p>Strategically placed so we can respond to clients quickly, wherever they are.</p>
+        <h2>Head Office in Davao, plus branch offices across Mindanao &amp; Visayas</h2>
+        <p>The deck lists 7 branch offices in addition to the Head Office; 6 addresses were legible in the source document &mdash; see the note at the top of this file.</p>
       </div>
 
       <div class="branches-layout">
@@ -211,7 +251,7 @@
              in the SVG below; edit the <circle>/<text> coordinates if you
              add or remove a branch. -->
         <div class="branch-map">
-          <svg viewBox="0 0 320 300" role="img" aria-label="Diagram of STRELLAS's six branch offices connected to the head office in Davao City">
+          <svg viewBox="0 0 320 300" role="img" aria-label="Diagram of Strellas Labor Service Cooperative's branch offices connected to the head office in Davao City">
             <!-- connecting lines, head office (Davao) as hub -->
             <line class="branch-line" x1="160" y1="150" x2="60" y2="60" />
             <line class="branch-line" x1="160" y1="150" x2="120" y2="230" />
@@ -224,25 +264,25 @@
             <circle class="branch-node" cx="160" cy="150" r="7" />
             <text class="branch-label" x="172" y="153">Davao (Head Office)</text>
 
-            <!-- CDO -->
+            <!-- Toril -->
             <circle class="branch-node" cx="60" cy="60" r="5" />
-            <text class="branch-label" x="10" y="48">Cagayan de Oro</text>
+            <text class="branch-label" x="10" y="48">Toril</text>
 
-            <!-- Davao -->
+            <!-- Calinan-Biao -->
             <circle class="branch-node" cx="120" cy="230" r="5" />
-            <text class="branch-label" x="80" y="250">Davao</text>
+            <text class="branch-label" x="70" y="250">Calinan-Biao</text>
 
-            <!-- Gensan -->
+            <!-- Cagayan de Oro -->
             <circle class="branch-node" cx="230" cy="80" r="5" />
-            <text class="branch-label" x="240" y="75">Gensan</text>
+            <text class="branch-label" x="240" y="75">Cagayan de Oro</text>
 
-            <!-- Santa Cruz -->
+            <!-- General Santos -->
             <circle class="branch-node" cx="260" cy="200" r="5" />
-            <text class="branch-label" x="235" y="222">Santa Cruz</text>
+            <text class="branch-label" x="215" y="222">General Santos</text>
 
-            <!-- Iloilo -->
+            <!-- Sta. Cruz / Iloilo -->
             <circle class="branch-node" cx="70" cy="180" r="5" />
-            <text class="branch-label" x="10" y="200">Iloilo</text>
+            <text class="branch-label" x="10" y="200">Sta. Cruz / Iloilo</text>
           </svg>
         </div>
 
@@ -251,28 +291,31 @@
           <div class="branch-entry">
             <span class="kind">Head Office</span>
             <h4>Davao</h4>
-            <p>129-A, Brgy. 21-C, Quezon Boulevard, Davao City</p>
+            <p>2nd floor, Room 214, H&amp;C Building, Alvarez Street (Pob.), Brgy. 27-C, Davao City</p>
           </div>
           <div class="branch-entry">
-            <span class="kind">Satellite Office</span>
-            <h4>Cagayan de Oro</h4>
-            <p>Zone 2, PSB, Bolobolo, El Salvador City, Misamis Oriental</p>
+            <h4>Toril, Davao City</h4>
+            <p>Binugao, Toril, Davao City</p>
           </div>
           <div class="branch-entry">
-            <h4>Gensan</h4>
-            <p>3rd Flr., CHM Bldg., 46-A Mansanitas St., General Santos City</p>
+            <h4>Cagayan de Oro City</h4>
+            <p>Lirio St., Cagayan de Oro</p>
           </div>
           <div class="branch-entry">
-            <h4>Santa Cruz</h4>
-            <p>Almendras Relocation, Lower Quinocol, Darong, Sta. Cruz, Davao del Sur</p>
+            <h4>General Santos City</h4>
+            <p>2/F Door C, Rostrell Bldg., Calumpang, General Santos City</p>
           </div>
           <div class="branch-entry">
-            <h4>Iloilo</h4>
-            <p>Unit 5, 2nd Flr., Emilio Enriquez Bldg., MCLL Hwy., Tetuan, Zamboanga City</p>
+            <h4>Sta. Cruz, Davao del Sur</h4>
+            <p>Prk. Kumintang, Coronon, Santa Cruz, Davao del Sur</p>
           </div>
           <div class="branch-entry">
-            <h4>Davao</h4>
-            <p>Rebecca Arcade, Door 4, Km. 8, Petron Gasoline Station, Mc Arthur Hwy., Ulas, Davao City</p>
+            <h4>Iloilo City</h4>
+            <p>2nd Flr., Alog Bldg., Brgy. San Isidro, Jaro, Iloilo City</p>
+          </div>
+          <div class="branch-entry">
+            <h4>Calinan-Biao, Davao City</h4>
+            <p>Purok 1, Biao Joaquin, Calinan, Davao City</p>
           </div>
         </div>
       </div>
@@ -284,70 +327,74 @@
     </div>
   </section>
 
-  <!-- =========================== BOARD OF DIRECTORS ========================== -->
+  <!-- =========================== COOPERATIVE OFFICERS ========================== -->
   <section class="section" id="board">
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">Leadership</span>
-        <h2>Board of Directors</h2>
-        <p>Three of our five board members are retired HR practitioners, now actively engaged in running the company.</p>
+        <h2>Cooperative Officers</h2>
+        <p>Elected officers and management, drawn from the Cooperative's orientation deck.</p>
       </div>
 
       <!-- EDIT HERE: names / roles -->
       <div class="board-grid">
         <div class="board-card">
-          <h4>Wilfredo M. Mendiola</h4>
-          <span class="role">Corporate President</span>
+          <h4>Atty. Art Lynson A. Tan</h4>
+          <span class="role">Chairman of the Cooperative</span>
         </div>
         <div class="board-card">
-          <h4>Atty. Art O. Tan</h4>
-          <span class="role">Board Member</span>
+          <h4>Ms. Luanne Quiachon</h4>
+          <span class="role">Vice-Chairman of the Cooperative</span>
         </div>
         <div class="board-card">
-          <h4>Leonardo B. Panuncialman Sr.</h4>
-          <span class="role">Board Member</span>
+          <h4>Ms. Rose Marie Carl D. Alvarez</h4>
+          <span class="role">Treasurer of the Cooperative</span>
         </div>
         <div class="board-card">
-          <h4>Buenaventura B. Alvarez</h4>
-          <span class="role">Board Member</span>
+          <h4>Ms. Jane I. A&ntilde;o</h4>
+          <span class="role">Secretary of the Cooperative</span>
         </div>
         <div class="board-card">
-          <h4>Joseph I. Sasin</h4>
-          <span class="role">Board Member</span>
+          <h4>Mr. Carlito A. Saratao</h4>
+          <span class="role">General Manager</span>
+        </div>
+        <div class="board-card">
+          <h4>Mr. Buenaventura B. Alvarez</h4>
+          <span class="role">Assistant General Manager</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- =========================== CORPORATE PHILOSOPHY ========================= -->
+  <!-- =========================== ORGANIZATIONAL STRUCTURE ========================= -->
   <section class="section section--dark" id="philosophy">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">Corporate Philosophy</span>
-        <h2>Three principles that guide every placement</h2>
+        <span class="eyebrow">Organizational Structure</span>
+        <h2>How the Cooperative is governed</h2>
       </div>
 
-      <!-- EDIT HERE: philosophy copy -->
+      <!-- EDIT HERE: org chart copy -->
       <div class="philosophy-list">
         <div class="philosophy-item">
           <span class="num">1</span>
           <div>
-            <h3>We find the right people for your company</h3>
-            <p>We take time to understand each client's business needs and match them against our experience in the industry, so every placement is screened, trained, and properly documented.</p>
+            <h3>General Assembly</h3>
+            <p>The General Assembly sits above the Audit Committee, Board of Directors, and Election Committee, and oversees the Ethics, Mediation &amp; Conciliation, GAD, and Education &amp; Training Committees.</p>
           </div>
         </div>
         <div class="philosophy-item">
           <span class="num">2</span>
           <div>
-            <h3>We believe our best asset is our people</h3>
-            <p>We invest in our employees through training, incentives, and team-building &mdash; and work with clients to provide a healthy, safe working environment.</p>
+            <h3>General Manager &amp; Assistant General Manager</h3>
+            <p>Day-to-day operations are led by the General Manager and Assistant General Manager, reporting up through the Board of Directors.</p>
           </div>
         </div>
         <div class="philosophy-item">
           <span class="num">3</span>
           <div>
-            <h3>We value trust and partnership</h3>
-            <p>Beyond staffing, we aim to build long-term partnerships with our clients, cultivating trust and generating lasting value.</p>
+            <h3>Finance, Admin/HR &amp; Operations</h3>
+            <p>Three managers &mdash; Finance &amp; Accounting, Admin/HR, and Operations &mdash; run the Cooperative's day-to-day departments.</p>
           </div>
         </div>
       </div>
@@ -359,12 +406,12 @@
     <div class="wrap contact-layout">
       <div class="contact-info">
         <span class="eyebrow">Contact Us</span>
-        <h2>Give the best result for you is our satisfaction</h2>
+        <h2>Reach the Strellas Head Office</h2>
 
         <!-- EDIT HERE: contact details -->
         <div class="item">
           <div class="label">Address</div>
-          <div>Room 214 H &amp; C Bldg., Alvarez Street, Brgy. 27-C (Pob.), Davao City, Philippines</div>
+          <div>2nd Flr., Room 214, H&amp;C Building, Alvarez Street (Pob.), Brgy. 27-C, Davao City, Philippines</div>
         </div>
         <div class="item">
           <div class="label">Telephone</div>
@@ -372,7 +419,8 @@
         </div>
         <div class="item">
           <div class="label">Email</div>
-          <div>Strellas_dvo@oulook.com</div>
+          <!-- Not confirmed in the source deck -- verify before publishing -->
+          <div>strellas_dvo@outlook.com</div>
         </div>
       </div>
 
@@ -414,14 +462,14 @@
   <div class="wrap">
     <div class="footer-grid">
       <div>
-        <h4>Strellas Labor Service Cooperative</h4>
-        <p>Connecting screened, trained personnel with leading companies across Mindanao and the Visayas since 2009.</p>
+        <img src="assets/logo-full.png" alt="Strellas Labor Service Cooperative" style="height:40px; margin-bottom:1rem;">
+        <p>CDA-registered labor service cooperative supplying labor service and continuous employment to member-employees across Mindanao and the Visayas since 2008.</p>
       </div>
       <div>
         <h4>Quick Links</h4>
         <ul>
           <li><a href="#about">About Us</a></li>
-          <li><a href="#services">Services</a></li>
+          <li><a href="#foundation">Vision &amp; Mission</a></li>
           <li><a href="#branches">Branches</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
@@ -435,7 +483,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <span>&copy; <span id="current-year">2026</span> SLSC &mdash; Strellas Labor Service Cooperative. All rights reserved.</span>
+      <span>&copy; <span id="current-year">2026</span> Strellas Labor Service Cooperative. All rights reserved.</span>
     </div>
   </div>
 </footer>
