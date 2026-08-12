@@ -42,7 +42,7 @@
   --paper: #f5f6f8;       /* cool light gray -- page background */
   --paper-dim: #ecedf1;   /* slightly darker paper -- alternating section bg */
   --charcoal: #1c2430;    /* body text color */
-  --muted: #dee0e2;       /* secondary/muted text on LIGHT backgrounds -- meets AA contrast on white */
+  --muted: #5b6472;       /* secondary/muted text on LIGHT backgrounds -- meets AA contrast on white */
   --muted-dark: #c7d2de;  /* secondary/muted text on DARK backgrounds */
   --line: #d8dce2;        /* hairline borders / dividers */
   --white: #ffffff;
