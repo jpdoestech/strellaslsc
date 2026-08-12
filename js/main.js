@@ -72,9 +72,9 @@ document.addEventListener("DOMContentLoaded", () => {
       // so the form still "works" during setup.
       if (!endpoint || endpoint.includes("YOUR_FORM_ID")) {
         console.warn(
-          "[weasi] Contact form has no live endpoint yet. Set the form's " +
+          "[slsc] Contact form has no live endpoint yet. Set the form's " +
             "action= attribute in index.html to a Formspree endpoint " +
-            "(https://formspree.io) or your own form backend."
+            "(https://formspree.io/f/xeajgyzp) or your own form backend."
         );
         const data = new FormData(form);
         const subject = encodeURIComponent(data.get("subject") || "Website inquiry");
