@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const body = encodeURIComponent(
           `Name: ${data.get("name")}\nEmail: ${data.get("email")}\n\n${data.get("message")}`
         );
-        window.location.href = `mailto:dvo@workexpertsandalliedservices.com?subject=${subject}&body=${body}`;
+        window.location.href = `mailto:strellas_davaomain@outlook.com?subject=${subject}&body=${body}`;
         return;
       }
 
