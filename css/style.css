@@ -235,9 +235,26 @@ textarea:focus-visible {
   position: sticky;
   top: 0;
   z-index: 100;
+  border-bottom: 1px solid var(--line);
+  /* No background/backdrop-filter directly on this element on purpose --
+     see .site-header::before below. Putting backdrop-filter (or filter,
+     transform, perspective) directly on an ancestor makes that ancestor
+     the "containing block" for any position:fixed descendant -- which
+     was silently trapping the mobile nav menu (.nav-links, which is
+     position:fixed) inside this header's own small height instead of
+     letting it cover the full screen. Applying the blur to this ::before
+     pseudo-element instead keeps the frosted-glass look without ever
+     touching .site-header's own filter/backdrop-filter property, so
+     .nav-links stays correctly positioned relative to the real viewport. */
+}
+
+.site-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
   background: rgba(246, 244, 239, 0.92);
   backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--line);
 }
 
 .site-header .wrap {
@@ -855,14 +872,21 @@ textarea:focus-visible {
   }
 
   .nav-links {
+    /* Full-screen overlay, anchored to the real viewport (top: 0, not a
+       guessed pixel offset below the header) -- this way it always covers
+       the topbar + header regardless of how many lines they wrap to on a
+       given phone. z-index is higher than .site-header's (100) so it sits
+       above the header/topbar while open; padding-top clears the header
+       row itself so the menu content doesn't start underneath it. */
     position: fixed;
-    top: 64px;
+    top: 0;
     left: 0;
     right: 0;
     bottom: 0;
+    z-index: 150;
     background: var(--paper);
     flex-direction: column;
-    padding: var(--space-lg) var(--space-md);
+    padding: 6rem var(--space-md) var(--space-lg);
     gap: var(--space-md);
     font-size: 1.1rem;
     transform: translateX(100%);
@@ -876,6 +900,11 @@ textarea:focus-visible {
 
   .nav-toggle {
     display: block;
+    /* Sits in the same stacking context as .nav-links (both are children
+       of .site-header) with a higher z-index, so the X stays visible and
+       clickable above the full-screen menu to let you close it again. */
+    position: relative;
+    z-index: 160;
   }
 
   .hero {

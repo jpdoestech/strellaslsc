@@ -22,12 +22,16 @@ document.addEventListener("DOMContentLoaded", () => {
       const isOpen = navLinks.classList.toggle("is-open");
       toggle.classList.toggle("is-open", isOpen);
       toggle.setAttribute("aria-expanded", String(isOpen));
+      // Lock background scroll while the full-screen mobile menu is open,
+      // so the page underneath doesn't shift/scroll behind it.
+      document.body.style.overflow = isOpen ? "hidden" : "";
     });
 
     // Close the mobile menu after tapping a link
     navLinks.querySelectorAll("a").forEach((link) => {
       link.addEventListener("click", () => {
         navLinks.classList.remove("is-open");
+        document.body.style.overflow = "";
         toggle.classList.remove("is-open");
         toggle.setAttribute("aria-expanded", "false");
       });
