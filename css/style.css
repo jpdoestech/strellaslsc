@@ -1,5 +1,5 @@
 /* ============================================================================
-   WEASI SITE STYLESHEET
+   STYLESHEET
    ----------------------------------------------------------------------------
    Organized in this order:
    1. Design tokens (colors, type, spacing) -- edit these to re-theme the site
@@ -18,14 +18,33 @@
    to change the values in this block.
 --------------------------------------------------------------------------- */
 :root {
-  /* Colors */
-  --ink: #10233a;        /* deep navy -- header bg, dark sections, primary text on light */
-  --sea: #1c5566;        /* brand teal-blue -- links, icons, section accents */
-  --gold: #e3a23c;       /* signature accent -- CTAs, highlights, active states. Use sparingly */
-  --paper: #f6f4ef;      /* warm off-white -- page background */
-  --paper-dim: #efece3;  /* slightly darker paper -- alternating section bg */
-  --charcoal: #20251f;   /* body text color */
-  --line: #ddd8cc;       /* hairline borders / dividers */
+  /* Colors -- re-themed to match the actual logo palette (French navy,
+     gold, gray, white), plus a coral accent for hover/highlight moments
+     so the page doesn't read as flat navy-and-gold everywhere.
+
+     Two things were fixed here on top of the color swap itself:
+     1. Contrast: several text colors (mainly gold-on-light-background
+        labels, and light-gray-on-dark secondary text) were too close to
+        their background to read comfortably. --gold-deep, --muted, and
+        --muted-dark exist specifically to fix those spots -- see where
+        they're used below.
+     2. One consistent gray scale instead of half a dozen one-off grays
+        scattered through the file, so future edits stay consistent. */
+  --ink: #0b2545;         /* French navy -- header bg, dark sections, primary text on light */
+  --ink-deep: #050f1e;    /* darkest navy -- hero gradient floor, footer */
+  --sea: #1b5a96;         /* brand blue -- links, icons, section accents (matches the logo's blue) */
+  --gold: #e7a83c;        /* bright gold -- CTAs, highlights on DARK backgrounds. Use sparingly */
+  --gold-deep: #8f5c0c;   /* deeper amber -- use instead of --gold for small text on LIGHT
+                              backgrounds (e.g. eyebrows); --gold itself is too light to read
+                              comfortably at small sizes against the cream/white page */
+  --coral: #e2603f;       /* secondary accent -- hover states and emphasis moments, used
+                              deliberately sparingly so it still reads as an accent */
+  --paper: #f5f6f8;       /* cool light gray -- page background */
+  --paper-dim: #ecedf1;   /* slightly darker paper -- alternating section bg */
+  --charcoal: #1c2430;    /* body text color */
+  --muted: #5b6472;       /* secondary/muted text on LIGHT backgrounds -- meets AA contrast on white */
+  --muted-dark: #c7d2de;  /* secondary/muted text on DARK backgrounds */
+  --line: #d8dce2;        /* hairline borders / dividers */
   --white: #ffffff;
 
   /* Type */
@@ -146,9 +165,18 @@ textarea:focus-visible {
   font-size: 0.75rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--gold);
+  /* --gold-deep, not --gold: at this small size, bright gold text on the
+     light/cream section backgrounds was hard to read (too little contrast).
+     --gold-deep is a richer amber that stays legible here; dark sections
+     override back to the brighter --gold just below, since that reads
+     fine against navy. */
+  color: var(--gold-deep);
   display: inline-block;
   margin-bottom: var(--space-sm);
+}
+
+.section--dark .eyebrow {
+  color: var(--gold);
 }
 
 .section-head {
@@ -162,12 +190,12 @@ textarea:focus-visible {
 }
 
 .section-head p {
-  color: #4b564f;
+  color: var(--muted);
   font-size: 1.05rem;
 }
 
 .section--dark .section-head p {
-  color: #cfd8d5;
+  color: var(--muted-dark);
 }
 
 .btn {
@@ -195,7 +223,7 @@ textarea:focus-visible {
 }
 
 .btn--gold:hover {
-  background: #f0b25a;
+  background: #f2bc63;
 }
 
 .btn--outline {
@@ -206,6 +234,8 @@ textarea:focus-visible {
 
 .btn--outline:hover {
   background: rgba(255, 255, 255, 0.08);
+  border-color: var(--coral);
+  color: var(--coral);
 }
 
 /* ---------------------------------------------------------------------------
@@ -213,7 +243,7 @@ textarea:focus-visible {
 --------------------------------------------------------------------------- */
 .topbar {
   background: var(--ink);
-  color: #b9c3cc;
+  color: var(--muted-dark);
   font-family: var(--font-mono);
   font-size: 0.75rem;
 }
@@ -379,7 +409,7 @@ textarea:focus-visible {
   align-items: center;
   color: var(--white);
   overflow: hidden;
-  background: linear-gradient(160deg, var(--ink) 0%, #0b1a2c 60%, #08131f 100%);
+  background: linear-gradient(160deg, var(--ink) 0%, #081a33 60%, var(--ink-deep) 100%);
 }
 
 /* Hero background photo -- swapped by JS from the Google Sheet if available,
@@ -419,12 +449,16 @@ textarea:focus-visible {
 
 .hero-copy h1 em {
   font-style: normal;
-  color: var(--gold);
+  /* Coral instead of gold here specifically -- gold is already the CTA
+     button below it, so giving the headline its own accent color keeps
+     the eye moving through navy -> coral -> gold rather than one gold
+     note doing every job on the page. */
+  color: var(--coral);
 }
 
 .hero-copy p {
   font-size: 1.1rem;
-  color: #d8dee1;
+  color: var(--muted-dark);
   max-width: 46ch;
   margin-bottom: var(--space-md);
 }
@@ -451,7 +485,7 @@ textarea:focus-visible {
 
 .hero-stat .label {
   font-size: 0.85rem;
-  color: #b9c3cc;
+  color: var(--muted-dark);
 }
 
 /* ---------------------------------------------------------------------------
@@ -466,7 +500,7 @@ textarea:focus-visible {
 
 .about-copy p {
   margin-bottom: var(--space-sm);
-  color: #3c463f;
+  color: var(--muted);
 }
 
 .service-list {
@@ -538,7 +572,7 @@ textarea:focus-visible {
 .branch-photos-empty {
   font-family: var(--font-mono);
   font-size: 0.85rem;
-  color: #8a8f86;
+  color: var(--muted);
   padding: var(--space-md);
   border: 1px dashed var(--line);
   border-radius: var(--radius);
@@ -584,7 +618,7 @@ textarea:focus-visible {
 }
 
 .branch-map {
-  background: #0e2e39;
+  background: #071b33;
   border-radius: var(--radius);
   padding: var(--space-md);
 }
@@ -596,7 +630,7 @@ textarea:focus-visible {
 
 .branch-node {
   fill: var(--gold);
-  stroke: #0e2e39;
+  stroke: #071b33;
   stroke-width: 2;
 }
 
@@ -620,7 +654,7 @@ textarea:focus-visible {
 }
 
 .branch-label {
-  fill: #d8dee1;
+  fill: var(--muted-dark);
   font-family: var(--font-mono);
   font-size: 9px;
 }
@@ -649,7 +683,7 @@ textarea:focus-visible {
 }
 
 .branch-entry p {
-  color: #4b564f;
+  color: var(--muted);
   font-size: 0.92rem;
 }
 
@@ -722,7 +756,7 @@ textarea:focus-visible {
 }
 
 .philosophy-item p {
-  color: #cfd8d5;
+  color: var(--muted-dark);
 }
 
 /* ---------------------------------------------------------------------------
@@ -776,15 +810,15 @@ textarea:focus-visible {
 .form-note {
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  color: #8a8f86;
+  color: var(--muted);
 }
 
 /* ---------------------------------------------------------------------------
    5i. FOOTER
 --------------------------------------------------------------------------- */
 .site-footer {
-  background: #0b1a2c;
-  color: #9aa6ac;
+  background: var(--ink-deep);
+  color: var(--muted-dark);
   padding: var(--space-lg) 0 var(--space-md);
   font-size: 0.9rem;
 }
