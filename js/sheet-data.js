@@ -190,7 +190,7 @@ async function loadSheetRows() {
   const { SHEET_CSV_URL, CACHE_MINUTES } = SHEET_CONFIG;
   if (!SHEET_CSV_URL) return [];
 
-  const cacheKey = "weasi_sheet_cache_v1";
+  const cacheKey = "slsc_sheet_cache_v1";
   if (CACHE_MINUTES > 0) {
     try {
       const cached = JSON.parse(localStorage.getItem(cacheKey) || "null");
@@ -231,7 +231,8 @@ function sortByOrder(rows) {
 /** Renders a grid of <figure><img></figure> cards into a container. */
 function renderGrid(container, rows) {
   if (!rows.length) {
-    container.innerHTML = '<p class="gallery-empty">No images yet -- add rows to the Google Sheet with this category to fill this section.</p>';
+    container.innerHTML = '<p class="gallery-empty">Loading images....</p>';
+    /**container.innerHTML = '<p class="gallery-empty">No images yet -- add rows to the Google Sheet with this category to fill this section.</p>'; *//
     return;
   }
   container.innerHTML = rows
@@ -239,7 +240,7 @@ function renderGrid(container, rows) {
       const caption = row.caption
         ? `<figcaption>${escapeHtml(row.caption)}</figcaption>`
         : "";
-      return `<figure><img src="${escapeHtml(row.image_url)}" alt="${escapeHtml(row.caption || row.title || "WEASI")}" loading="lazy">${caption}</figure>`;
+      return `<figure><img src="${escapeHtml(row.image_url)}" alt="${escapeHtml(row.caption || row.title || "SLSC")}" loading="lazy">${caption}</figure>`;
     })
     .join("");
 }
