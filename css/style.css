@@ -719,6 +719,13 @@ textarea:focus-visible {
   height: 100%;
   border: 0;
   display: block;
+  /* This is just a small static preview now, not meant to be panned/
+     zoomed in place -- .branch-map-link (an <a>, positioned on top of
+     the whole preview below) is what visitors actually interact with,
+     taking them to the real Google Maps for directions etc. Disabling
+     pointer events here guarantees every click reaches that link rather
+     than occasionally landing inside the iframe's own controls. */
+  pointer-events: none;
 }
 
 .branch-map-empty {
@@ -732,6 +739,44 @@ textarea:focus-visible {
   font-family: var(--font-mono);
   font-size: 0.85rem;
   color: var(--muted-dark);
+}
+
+/* Covers the ENTIRE map preview (not just a corner button) -- click
+   anywhere on the map image and it opens the real Google Maps location
+   in a new tab. .branch-map-badge inside is just the visible label. */
+.branch-map-link {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: var(--space-sm);
+  cursor: pointer;
+}
+
+.branch-map-link:hover {
+  background: rgba(5, 15, 30, 0.15);
+}
+
+.branch-map-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(5, 15, 30, 0.72);
+  backdrop-filter: blur(4px);
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.branch-map-link:hover .branch-map-badge {
+  background: rgba(5, 15, 30, 0.92);
+  color: var(--gold);
 }
 
 .branch-list {

@@ -98,7 +98,7 @@ const SHEET_CONFIG = {
    ============================================================================ */
 const BRANCH_CONFIG = {
   // ---- EDIT HERE ---------------------------------------------------------
-  BRANCHES_CSV_URL: "",
+  BRANCHES_CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRl7fxMLEsaRC9ezFMQZLtUawwAvqeavR4XZcglZQUzCR0fP_qd4QX-25sCjVgbTkeqkGjwmwLIn0zO/pub?gid=897586402&single=true&output=csv",
   CACHE_MINUTES: 10,
   // -------------------------------------------------------------------------
 };
@@ -318,11 +318,18 @@ function buildMapEmbedUrl(lat, lng) {
   return `https://www.google.com/maps?q=${lat},${lng}&z=16&output=embed`;
 }
 
+/** Builds a normal (non-embed) Google Maps URL -- opens the full site/app,
+ *  with directions available, in a new tab. */
+function buildMapLinkUrl(lat, lng) {
+  return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+}
+
 /** Renders the branch list + wires up clicks to swap the embedded map. */
 function renderBranches(rows) {
   const listEl = document.getElementById("branch-list");
   const frameEl = document.getElementById("branch-map-frame");
   const emptyEl = document.getElementById("branch-map-empty");
+  const linkEl = document.getElementById("branch-map-link");
   if (!listEl || !frameEl || !emptyEl) return;
 
   const branches = sortByOrder(rows)
@@ -349,6 +356,10 @@ function renderBranches(rows) {
     frameEl.src = buildMapEmbedUrl(lat, lng);
     frameEl.hidden = false;
     emptyEl.hidden = true;
+    if (linkEl) {
+      linkEl.href = buildMapLinkUrl(lat, lng);
+      linkEl.hidden = false;
+    }
     listEl.querySelectorAll(".branch-entry").forEach((el) => el.classList.remove("is-active"));
     btn.classList.add("is-active");
   };

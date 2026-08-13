@@ -259,10 +259,23 @@
             class="branch-map-frame"
             loading="lazy"
             referrerpolicy="no-referrer-when-downgrade"
-            title="Map of the selected Strellas branch office"
+            title="Map preview of the selected Strellas branch office"
+            tabindex="-1"
             hidden
           ></iframe>
-          <p class="branch-map-empty" id="branch-map-empty">Connect the "branches" tab in your Google Sheet to show a live, clickable map here.</p>
+         <p class="branch-map-empty" id="branch-map-empty"></p>
+          <!-- <p class="branch-map-empty" id="branch-map-empty">Connect the "branches" tab in your Google Sheet to show a live, clickable map here.</p> -->
+
+          <!-- The map preview above is just that -- a small preview, not
+               meant to be panned/zoomed in place. This <a> sits on top of
+               the ENTIRE preview (not just a corner button), so clicking
+               anywhere on the map image takes the visitor to the real,
+               full Google Maps site/app for that branch, with directions
+               available. Hidden until a real branch with coordinates is
+               shown (js/sheet-data.js sets its href and un-hides it). -->
+          <a href="#" id="branch-map-link" class="branch-map-link" target="_blank" rel="noopener" aria-label="Open this location in Google Maps" hidden>
+            <span class="branch-map-badge">Open in Google Maps &#8599;</span>
+          </a>
         </div>
 
         <!-- EDIT HERE: only used as a fallback until BRANCHES_CSV_URL is set
