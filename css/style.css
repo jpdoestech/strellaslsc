@@ -30,7 +30,7 @@
         they're used below.
      2. One consistent gray scale instead of half a dozen one-off grays
         scattered through the file, so future edits stay consistent. */
-  --ink: #050f1e;         /* #0b2545 French navy -- header bg, dark sections, primary text on light */
+  --ink: #0b2545;         /* #0b2545 French navy -- header bg, dark sections, primary text on light */
   --ink-deep: #050f1e;    /* darkest navy -- hero gradient floor, footer */
   --sea: #1b5a96;         /* brand blue -- links, icons, section accents (matches the logo's blue) */
   --gold: #e7a83c;        /* bright gold -- CTAs, highlights on DARK backgrounds. Use sparingly */
