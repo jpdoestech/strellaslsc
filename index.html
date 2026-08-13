@@ -243,49 +243,33 @@
       </div>
 
       <div class="branches-layout">
-        <!-- Signature element: stylized network diagram of the branch
-             locations (not a literal geographic map -- purely illustrative
-             of the connections between offices). Positions are set by hand
-             in the SVG below; edit the <circle>/<text> coordinates if you
-             add or remove a branch. -->
+        <!--
+          Real, interactive Google Map -- no API key needed. Shows whichever
+          branch is currently selected in the list to the right. Filled and
+          swapped by js/sheet-data.js from a "branches" tab in your Google
+          Sheet (separate from the image tab) -- see the big comment block
+          at the top of js/sheet-data.js for setup steps.
+          Until that sheet is connected, the static fallback list below
+          stays visible and the map shows a short placeholder message
+          instead of guessing at coordinates.
+        -->
         <div class="branch-map">
-          <svg viewBox="0 0 320 300" role="img" aria-label="Diagram of Strellas Labor Service Cooperative's branch offices connected to the head office in Davao City">
-            <!-- connecting lines, head office (Davao) as hub -->
-            <line class="branch-line" x1="160" y1="150" x2="60" y2="60" />
-            <line class="branch-line" x1="160" y1="150" x2="120" y2="230" />
-            <line class="branch-line" x1="160" y1="150" x2="230" y2="80" />
-            <line class="branch-line" x1="160" y1="150" x2="260" y2="200" />
-            <line class="branch-line" x1="160" y1="150" x2="70" y2="180" />
-
-            <!-- Davao (head office) -->
-            <circle class="branch-node-pulse" cx="160" cy="150" r="4" />
-            <circle class="branch-node" cx="160" cy="150" r="7" />
-            <text class="branch-label" x="172" y="153">Davao (Head Office)</text>
-
-            <!-- Davao -->
-            <circle class="branch-node" cx="60" cy="60" r="5" />
-            <text class="branch-label" x="10" y="48">Davao</text>
-
-            <!-- Calinan-Biao -->
-            <circle class="branch-node" cx="120" cy="230" r="5" />
-            <text class="branch-label" x="70" y="250">Calinan</text>
-
-            <!-- Cagayan de Oro -->
-            <circle class="branch-node" cx="230" cy="80" r="5" />
-            <text class="branch-label" x="240" y="75">Cagayan de Oro</text>
-
-            <!-- General Santos -->
-            <circle class="branch-node" cx="260" cy="200" r="5" />
-            <text class="branch-label" x="215" y="222">General Santos</text>
-
-            <!-- Sta. Cruz / Iloilo -->
-            <circle class="branch-node" cx="70" cy="180" r="5" />
-            <text class="branch-label" x="10" y="200">Sta. Cruz / Iloilo</text>
-          </svg>
+          <iframe
+            id="branch-map-frame"
+            class="branch-map-frame"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Map of the selected Strellas branch office"
+            hidden
+          ></iframe>
+          <p class="branch-map-empty" id="branch-map-empty">Connect the "branches" tab in your Google Sheet to show a live, clickable map here.</p>
         </div>
 
-        <!-- EDIT HERE: branch names / addresses -->
-        <div class="branch-list">
+        <!-- EDIT HERE: only used as a fallback until BRANCHES_CSV_URL is set
+             in js/sheet-data.js -- once that's connected, these are
+             replaced automatically with real, clickable entries built from
+             your sheet (name / kind / address / coordinates / order). -->
+        <div class="branch-list" id="branch-list">
           <div class="branch-entry">
             <span class="kind">Head Office</span>
             <h4>Davao</h4>

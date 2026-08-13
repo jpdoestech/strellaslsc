@@ -57,6 +57,52 @@ const SHEET_CONFIG = {
   // -------------------------------------------------------------------------
 };
 
+/* ============================================================================
+   BRANCH MAP (separate Google Sheet tab from the image database above)
+   ----------------------------------------------------------------------------
+   Powers the real, clickable Google Map + branch list in the "Where we
+   operate" section. Same no-API-key approach as the image sheet -- publish
+   a tab as CSV, paste the link below.
+
+   HOW TO SET UP THE "branches" SHEET TAB
+   ---------------------------------------------------------------------------
+   1. In the SAME Google Sheet (or a different one, doesn't matter), add a
+      new tab with these EXACT column headers in row 1:
+
+        name | kind | address | coordinates | order
+
+      - name        : shown as the heading for that branch, e.g. "Davao"
+      - kind        : small label above the name, e.g. "Head Office"
+                      (optional -- leave blank for regular branches)
+      - address     : full postal address, shown under the name
+      - coordinates : the branch's location. Paste EITHER:
+                        - decimal "lat,lng", e.g.  7.067960, 125.616310
+                        - or a DMS string copied from Google Maps, e.g.
+                          17°06'44.8"N 121°40'12.2"E
+                      Both formats are parsed automatically. A shortened
+                      maps.app.goo.gl link will NOT work here -- open it
+                      once yourself and copy the coordinates from the
+                      resulting full URL/address bar instead.
+      - order       : a number controlling display order (1, 2, 3 ...).
+                      The row with order = 1 (or the first row, if "order"
+                      is left blank) is the branch shown on page load.
+
+   2. File > Share > Publish to web, choose that specific tab, format
+      "Comma-separated values (.csv)", Publish, copy the URL.
+
+   3. Paste it into BRANCH_CONFIG.BRANCHES_CSV_URL below.
+
+   Until this is set, the static fallback branch list already in
+   index.html stays visible, and the map area shows a short placeholder
+   message instead of guessing at coordinates.
+   ============================================================================ */
+const BRANCH_CONFIG = {
+  // ---- EDIT HERE ---------------------------------------------------------
+  BRANCHES_CSV_URL: "",
+  CACHE_MINUTES: 10,
+  // -------------------------------------------------------------------------
+};
+
 /* Maps a "category" value from the sheet to the DOM container(s) it should
    render into. Add a new line here any time you add a new category to your
    sheet and a matching container `id` in index.html. */
@@ -198,6 +244,136 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
+/** Fetches and caches a published sheet CSV at any URL, returning row objects.
+ *  Generic version of the image-sheet fetcher above, reused for the branch
+ *  sheet too (different URL, different cache key) so both can be published
+ *  as separate tabs with separate "Publish to web" links. */
+async function loadCsvRows(csvUrl, cacheKey, cacheMinutes) {
+  if (!csvUrl) return [];
+
+  if (cacheMinutes > 0) {
+    try {
+      const cached = JSON.parse(localStorage.getItem(cacheKey) || "null");
+      if (cached && Date.now() - cached.fetchedAt < cacheMinutes * 60 * 1000) {
+        return cached.rows;
+      }
+    } catch (e) {
+      /* corrupt cache entry -- ignore and re-fetch */
+    }
+  }
+
+  const response = await fetch(csvUrl, { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error(`Could not fetch the Google Sheet CSV (status ${response.status})`);
+  }
+  const text = await response.text();
+  const rows = rowsToObjects(parseCsv(text));
+
+  if (cacheMinutes > 0) {
+    try {
+      localStorage.setItem(cacheKey, JSON.stringify({ fetchedAt: Date.now(), rows }));
+    } catch (e) {
+      /* storage full or unavailable -- non-fatal, just skip caching */
+    }
+  }
+  return rows;
+}
+
+/**
+ * Parses a "coordinates" cell into { lat, lng } decimal numbers, or null if
+ * it can't be understood. Accepts:
+ *   - decimal "lat,lng"                       e.g. "7.067960, 125.616310"
+ *   - a DMS string copied from Google Maps     e.g. 17°06'44.8"N 121°40'12.2"E
+ * Shortened maps.app.goo.gl links are NOT supported here -- see the setup
+ * comment above BRANCH_CONFIG for why, and what to paste instead.
+ */
+function parseCoordinates(raw) {
+  if (!raw) return null;
+  const str = raw.trim();
+
+  const decimalMatch = str.match(/^(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$/);
+  if (decimalMatch) {
+    return { lat: parseFloat(decimalMatch[1]), lng: parseFloat(decimalMatch[2]) };
+  }
+
+  const dmsMatch = str.match(
+    /(\d+)[°ºd]\s*(\d+)['′m]\s*([\d.]+)["″s]?\s*([NSns])[,\s]+(\d+)[°ºd]\s*(\d+)['′m]\s*([\d.]+)["″s]?\s*([EWew])/
+  );
+  if (dmsMatch) {
+    const toDecimal = (deg, min, sec, dir) => {
+      const magnitude = Number(deg) + Number(min) / 60 + Number(sec) / 3600;
+      return /[SWsw]/.test(dir) ? -magnitude : magnitude;
+    };
+    return {
+      lat: toDecimal(dmsMatch[1], dmsMatch[2], dmsMatch[3], dmsMatch[4]),
+      lng: toDecimal(dmsMatch[5], dmsMatch[6], dmsMatch[7], dmsMatch[8]),
+    };
+  }
+
+  return null;
+}
+
+/** Builds a free, no-API-key Google Maps embed URL for one coordinate pair. */
+function buildMapEmbedUrl(lat, lng) {
+  return `https://www.google.com/maps?q=${lat},${lng}&z=16&output=embed`;
+}
+
+/** Renders the branch list + wires up clicks to swap the embedded map. */
+function renderBranches(rows) {
+  const listEl = document.getElementById("branch-list");
+  const frameEl = document.getElementById("branch-map-frame");
+  const emptyEl = document.getElementById("branch-map-empty");
+  if (!listEl || !frameEl || !emptyEl) return;
+
+  const branches = sortByOrder(rows)
+    .map((row) => ({ ...row, coords: parseCoordinates(row.coordinates) }))
+    .filter((row) => row.name && row.coords);
+
+  if (!branches.length) return; // leave the static fallback list in index.html untouched
+
+  listEl.innerHTML = branches
+    .map((row, i) => {
+      const kind = row.kind ? `<span class="kind">${escapeHtml(row.kind)}</span>` : "";
+      const active = i === 0 ? " is-active" : "";
+      return `<button type="button" class="branch-entry${active}" data-lat="${row.coords.lat}" data-lng="${row.coords.lng}">
+        ${kind}
+        <h4>${escapeHtml(row.name)}</h4>
+        <p>${escapeHtml(row.address || "")}</p>
+      </button>`;
+    })
+    .join("");
+
+  const showBranch = (btn) => {
+    const lat = btn.getAttribute("data-lat");
+    const lng = btn.getAttribute("data-lng");
+    frameEl.src = buildMapEmbedUrl(lat, lng);
+    frameEl.hidden = false;
+    emptyEl.hidden = true;
+    listEl.querySelectorAll(".branch-entry").forEach((el) => el.classList.remove("is-active"));
+    btn.classList.add("is-active");
+  };
+
+  listEl.querySelectorAll(".branch-entry").forEach((btn) => {
+    btn.addEventListener("click", () => showBranch(btn));
+  });
+
+  showBranch(listEl.querySelector(".branch-entry"));
+}
+
+/** Fetches the branches sheet (if configured) and renders it. */
+async function initBranchMap() {
+  const { BRANCHES_CSV_URL, CACHE_MINUTES } = BRANCH_CONFIG;
+  if (!BRANCHES_CSV_URL) return; // static fallback list + placeholder message stay as-is
+
+  try {
+    const rows = await loadCsvRows(BRANCHES_CSV_URL, "slsc_branches_cache_v1", CACHE_MINUTES);
+    renderBranches(rows);
+  } catch (err) {
+    console.error("[slsc] Failed to load branches from Google Sheets:", err);
+    // Fail quietly on the page -- static fallback list stays visible.
+  }
+}
+
 /** Main entry point: fetch the sheet once, then render every configured category. */
 async function initSheetImages() {
   const targets = Object.values(CATEGORY_MAP)
@@ -239,4 +415,7 @@ async function initSheetImages() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", initSheetImages);
+document.addEventListener("DOMContentLoaded", () => {
+  initSheetImages();
+  initBranchMap();
+});

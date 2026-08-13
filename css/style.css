@@ -691,65 +691,78 @@ textarea:focus-visible {
 }
 
 /* ---------------------------------------------------------------------------
-   5e. BRANCHES (network map signature element + list)
+   5e. BRANCHES (real embedded Google Map + clickable branch list)
+   No Google API key involved -- the iframe uses the same free "Maps
+   Embed" mechanism as Google's own Share > Embed a map feature
+   (google.com/maps?q=LAT,LNG&output=embed). js/sheet-data.js swaps its
+   src attribute whenever a .branch-entry button is clicked.
 --------------------------------------------------------------------------- */
 .branches-layout {
   display: grid;
   grid-template-columns: 1fr 1.1fr;
   gap: var(--space-lg);
-  align-items: center;
+  align-items: start;
 }
 
 .branch-map {
+  position: relative;
   background: #071b33;
+  border: 1px solid var(--line-dark);
   border-radius: var(--radius);
-  padding: var(--space-md);
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
 }
 
-.branch-map svg {
+.branch-map-frame {
   width: 100%;
-  height: auto;
+  height: 100%;
+  border: 0;
+  display: block;
 }
 
-.branch-node {
-  fill: var(--gold);
-  stroke: #071b33;
-  stroke-width: 2;
-}
-
-.branch-node-pulse {
-  fill: none;
-  stroke: var(--gold);
-  stroke-width: 1.5;
-  opacity: 0;
-  animation: pulse 2.6s ease-out infinite;
-}
-
-@keyframes pulse {
-  0% { r: 4; opacity: 0.6; }
-  100% { r: 16; opacity: 0; }
-}
-
-.branch-line {
-  stroke: rgba(227, 162, 60, 0.35);
-  stroke-width: 1;
-  stroke-dasharray: 3 3;
-}
-
-.branch-label {
-  fill: var(--muted-dark);
+.branch-map-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-md);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 0.85rem;
+  color: var(--muted-dark);
 }
 
 .branch-list {
   display: grid;
-  gap: var(--space-sm);
+  gap: 2px;
 }
 
+/* .branch-entry is a <button> when rendered by js/sheet-data.js (so it's
+   keyboard-operable and screen-reader friendly), styled to reset the
+   default button chrome and look like the plain list rows it replaces. */
 .branch-entry {
-  padding: var(--space-sm) 0;
-  border-bottom: 1px solid var(--line);
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--line-dark);
+  border-left: 3px solid transparent;
+  padding: var(--space-sm) var(--space-sm) var(--space-sm) var(--space-xs);
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.branch-entry:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.branch-entry.is-active {
+  background: rgba(231, 168, 60, 0.08);
+  border-left-color: var(--gold);
 }
 
 .branch-entry h4 {
@@ -766,7 +779,7 @@ textarea:focus-visible {
 }
 
 .branch-entry p {
-  color: var(--muted);
+  color: var(--muted-dark);
   font-size: 0.92rem;
 }
 
