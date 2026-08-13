@@ -111,4 +111,57 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ---------------------------- Footer year ------------------------------- */
   const yearEl = document.getElementById("current-year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+  /* --------------------------------- Lightbox ------------------------------
+     Enlarges any image inside .gallery-grid or .branch-photos when clicked
+     -- mainly for mobile, where the grid thumbnails are too small to make
+     out clearly. Uses event delegation (one listener on document) instead
+     of binding to each <img> individually, because the images in those two
+     grids are added later by js/sheet-data.js from the Google Sheet -- a
+     per-image listener set up here at page load would miss them entirely.
+  --------------------------------------------------------------------------- */
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImage = document.getElementById("lightbox-image");
+  const lightboxCaption = document.getElementById("lightbox-caption");
+  const lightboxClose = document.getElementById("lightbox-close");
+
+  if (lightbox && lightboxImage && lightboxClose) {
+    const openLightbox = (img) => {
+      lightboxImage.src = img.currentSrc || img.src;
+      lightboxImage.alt = img.alt || "";
+      const figure = img.closest("figure");
+      const captionEl = figure ? figure.querySelector("figcaption") : null;
+      lightboxCaption.textContent = captionEl ? captionEl.textContent : "";
+      lightbox.classList.add("is-open");
+      lightbox.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    };
+
+    const closeLightbox = () => {
+      lightbox.classList.remove("is-open");
+      lightbox.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+    };
+
+    // Delegated click listener -- catches clicks on any current OR future
+    // image inside these two grids.
+    document.addEventListener("click", (e) => {
+      const img = e.target.closest(".gallery-grid img, .branch-photos img");
+      if (img) openLightbox(img);
+    });
+
+    lightboxClose.addEventListener("click", closeLightbox);
+
+    // Click on the dark backdrop (but not the image itself) also closes it.
+    lightbox.addEventListener("click", (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+
+    // Esc key closes it too.
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && lightbox.classList.contains("is-open")) {
+        closeLightbox();
+      }
+    });
+  }
 });

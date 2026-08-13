@@ -568,6 +568,89 @@ textarea:focus-visible {
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.65), transparent);
 }
 
+.gallery-grid img,
+.branch-photos img {
+  cursor: zoom-in;
+}
+
+/* ---------------------------------------------------------------------------
+   LIGHTBOX (enlarged image view on click)
+   Works on any image inside .gallery-grid or .branch-photos, including ones
+   added later by js/sheet-data.js from your Google Sheet -- see the click
+   listener in js/main.js, which uses event delegation so it doesn't need to
+   know about images in advance.
+--------------------------------------------------------------------------- */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+  background: rgba(5, 15, 30, 0.92);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease;
+}
+
+.lightbox.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.lightbox img {
+  max-width: 100%;
+  max-height: 82vh;
+  object-fit: contain;
+  border-radius: var(--radius);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox figcaption {
+  position: static;
+  background: none;
+  color: var(--muted-dark);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  text-align: center;
+  margin-top: var(--space-sm);
+  padding: 0;
+}
+
+.lightbox-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.lightbox-close {
+  position: fixed;
+  top: var(--space-sm);
+  right: var(--space-md);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--white);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+@media (max-width: 640px) {
+  .lightbox img {
+    max-height: 72vh;
+  }
+}
+
 .gallery-empty,
 .branch-photos-empty {
   font-family: var(--font-mono);

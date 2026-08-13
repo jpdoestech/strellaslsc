@@ -485,6 +485,21 @@
   </div>
 </footer>
 
+<!--
+  LIGHTBOX MARKUP (enlarged image view)
+  Empty by default -- js/main.js fills #lightbox-image / #lightbox-caption
+  and toggles the "is-open" class whenever a visitor clicks a photo in the
+  gallery or branch photo grids. Sits once at the end of the page and is
+  reused for every image, rather than one lightbox per photo.
+-->
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Close enlarged image">&times;</button>
+  <div class="lightbox-inner">
+    <img src="" alt="" id="lightbox-image">
+    <figcaption id="lightbox-caption"></figcaption>
+  </div>
+</div>
+
 <script src="js/sheet-data.js"></script>
 <script src="js/main.js"></script>
 </body>
