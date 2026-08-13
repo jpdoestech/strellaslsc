@@ -293,10 +293,11 @@ async function loadCsvRows(csvUrl, cacheKey, cacheMinutes) {
 }
 
 /**
- * Turns a "coordinates" cell (and, as a fallback, the "address" cell) into
- * a single string usable directly as a Google Maps search query -- either
- * "lat,lng" or free text (an address/place name). Google's map embed/search
- * URLs accept either form equally well, no geocoding step needed on our end.
+ * Turns a "coordinates" cell (and, as fallbacks, "address" then "name")
+ * into a single string usable directly as a Google Maps search query --
+ * either "lat,lng" or free text (an address/place name). Google's map
+ * embed/search URLs accept either form equally well, no geocoding step
+ * needed on our end.
  *
  * Tries, in order:
  *   1. decimal "lat,lng"                      "7.067960, 125.616310"
@@ -304,11 +305,15 @@ async function loadCsvRows(csvUrl, cacheKey, cacheMinutes) {
  *   3. a FULL (non-shortened) Google Maps URL containing coordinates,
  *      e.g. .../@7.0680,125.6163,17z/...  or  ?q=7.068,125.616
  *   4. any other non-URL text, used as-is (a plain address or place name)
- *   5. if "coordinates" is blank or none of the above matched, falls back
- *      to the "address" cell as a text search
- * Returns null only if nothing usable was found in either cell.
+ *   5. if "coordinates" is blank or unusable (e.g. a shortened link),
+ *      falls back to the "address" cell as a text search
+ *   6. if THAT is also blank, falls back to the branch's "name" itself --
+ *      almost always searchable on Maps even without a formal address
+ * Only returns null if the branch has no name at all, which shouldn't
+ * happen -- the point is a named branch should never silently disappear
+ * from the list just because its location data is incomplete.
  */
-function resolveMapQuery(coordinatesRaw, addressFallback) {
+function resolveMapQuery(coordinatesRaw, addressFallback, nameFallback) {
   const raw = (coordinatesRaw || "").trim();
 
   if (raw) {
@@ -341,13 +346,15 @@ function resolveMapQuery(coordinatesRaw, addressFallback) {
     if (!/^https?:\/\//i.test(raw)) return raw;
 
     // Otherwise it's some URL we can't extract coordinates from (most
-    // commonly a shortened maps.app.goo.gl link) -- can't use it safely.
-    return null;
+    // commonly a shortened maps.app.goo.gl link) -- fall through to the
+    // address/name fallbacks below rather than giving up entirely.
   }
 
-  // "coordinates" was blank -- fall back to the address text itself.
   const address = (addressFallback || "").trim();
-  return address || null;
+  if (address) return address;
+
+  const name = (nameFallback || "").trim();
+  return name || null;
 }
 
 /** Builds a free, no-API-key Google Maps embed URL for a location query
@@ -371,8 +378,14 @@ function renderBranches(rows) {
   if (!listEl || !frameEl || !emptyEl) return;
 
   const branches = sortByOrder(rows)
-    .map((row) => ({ ...row, mapQuery: resolveMapQuery(row.coordinates, row.address) }))
-    .filter((row) => row.name && row.mapQuery);
+    .map((row) => ({
+      ...row,
+      mapQuery: resolveMapQuery(row.coordinates, row.address, row.name),
+    }))
+    .filter((row) => row.name); // only requirement now -- a named branch
+    // always shows in the list even if its location data is incomplete;
+    // see resolveMapQuery's fallback chain above (coordinates -> address
+    // -> name) for how it's still usually possible to show *some* map.
 
   if (!branches.length) return; // leave the static fallback list in index.html untouched
 
