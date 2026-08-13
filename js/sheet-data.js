@@ -98,7 +98,7 @@ const SHEET_CONFIG = {
    ============================================================================ */
 const BRANCH_CONFIG = {
   // ---- EDIT HERE ---------------------------------------------------------
-  BRANCHES_CSV_URL: "",
+  BRANCHES_CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRl7fxMLEsaRC9ezFMQZLtUawwAvqeavR4XZcglZQUzCR0fP_qd4QX-25sCjVgbTkeqkGjwmwLIn0zO/pub?gid=897586402&single=true&output=csv",
   CACHE_MINUTES: 10,
   // -------------------------------------------------------------------------
 };
