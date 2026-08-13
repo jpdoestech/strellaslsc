@@ -74,15 +74,28 @@ const SHEET_CONFIG = {
       - name        : shown as the heading for that branch, e.g. "Davao"
       - kind        : small label above the name, e.g. "Head Office"
                       (optional -- leave blank for regular branches)
-      - address     : full postal address, shown under the name
-      - coordinates : the branch's location. Paste EITHER:
-                        - decimal "lat,lng", e.g.  7.067960, 125.616310
-                        - or a DMS string copied from Google Maps, e.g.
-                          17°06'44.8"N 121°40'12.2"E
-                      Both formats are parsed automatically. A shortened
-                      maps.app.goo.gl link will NOT work here -- open it
-                      once yourself and copy the coordinates from the
-                      resulting full URL/address bar instead.
+      - address     : full postal address, shown under the name -- also used
+                      as the map location if "coordinates" is left blank
+                      (see below), so it's worth keeping accurate either way.
+      - coordinates : OPTIONAL. Leave this blank and the "address" text
+                      above is used to locate the map instead -- Google Maps
+                      can usually place a plain address well enough on its
+                      own. Fill it in for pinpoint accuracy (useful when an
+                      address is vague, e.g. "Purok 1, Biao Joaquin"). Any
+                      of these formats work:
+                        - decimal "lat,lng"                 7.067960, 125.616310
+                        - a DMS string from Google Maps      17°06'44.8"N 121°40'12.2"E
+                        - a FULL (non-shortened) Google Maps URL that
+                          contains the coordinates in it, e.g. one copied
+                          from the address bar after opening a place:
+                          https://www.google.com/maps/place/.../@7.0680,125.6163,17z/...
+                        - anything else typed in here (a place name, a
+                          cross-street, etc.) is used as-is, as a text
+                          search on the map -- same as leaving it blank
+                          and relying on "address"
+                      A SHORTENED maps.app.goo.gl link still will NOT work
+                      in this column -- open it once yourself first and
+                      copy the full resulting URL or coordinates instead.
       - order       : a number controlling display order (1, 2, 3 ...).
                       The row with order = 1 (or the first row, if "order"
                       is left blank) is the branch shown on page load.
@@ -280,48 +293,73 @@ async function loadCsvRows(csvUrl, cacheKey, cacheMinutes) {
 }
 
 /**
- * Parses a "coordinates" cell into { lat, lng } decimal numbers, or null if
- * it can't be understood. Accepts:
- *   - decimal "lat,lng"                       e.g. "7.067960, 125.616310"
- *   - a DMS string copied from Google Maps     e.g. 17°06'44.8"N 121°40'12.2"E
- * Shortened maps.app.goo.gl links are NOT supported here -- see the setup
- * comment above BRANCH_CONFIG for why, and what to paste instead.
+ * Turns a "coordinates" cell (and, as a fallback, the "address" cell) into
+ * a single string usable directly as a Google Maps search query -- either
+ * "lat,lng" or free text (an address/place name). Google's map embed/search
+ * URLs accept either form equally well, no geocoding step needed on our end.
+ *
+ * Tries, in order:
+ *   1. decimal "lat,lng"                      "7.067960, 125.616310"
+ *   2. a DMS string copied from Google Maps    17°06'44.8"N 121°40'12.2"E
+ *   3. a FULL (non-shortened) Google Maps URL containing coordinates,
+ *      e.g. .../@7.0680,125.6163,17z/...  or  ?q=7.068,125.616
+ *   4. any other non-URL text, used as-is (a plain address or place name)
+ *   5. if "coordinates" is blank or none of the above matched, falls back
+ *      to the "address" cell as a text search
+ * Returns null only if nothing usable was found in either cell.
  */
-function parseCoordinates(raw) {
-  if (!raw) return null;
-  const str = raw.trim();
+function resolveMapQuery(coordinatesRaw, addressFallback) {
+  const raw = (coordinatesRaw || "").trim();
 
-  const decimalMatch = str.match(/^(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$/);
-  if (decimalMatch) {
-    return { lat: parseFloat(decimalMatch[1]), lng: parseFloat(decimalMatch[2]) };
+  if (raw) {
+    const decimalMatch = raw.match(/^(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$/);
+    if (decimalMatch) return `${decimalMatch[1]},${decimalMatch[2]}`;
+
+    const dmsMatch = raw.match(
+      /(\d+)[°ºd]\s*(\d+)['′m]\s*([\d.]+)["″s]?\s*([NSns])[,\s]+(\d+)[°ºd]\s*(\d+)['′m]\s*([\d.]+)["″s]?\s*([EWew])/
+    );
+    if (dmsMatch) {
+      const toDecimal = (deg, min, sec, dir) => {
+        const magnitude = Number(deg) + Number(min) / 60 + Number(sec) / 3600;
+        return /[SWsw]/.test(dir) ? -magnitude : magnitude;
+      };
+      const lat = toDecimal(dmsMatch[1], dmsMatch[2], dmsMatch[3], dmsMatch[4]);
+      const lng = toDecimal(dmsMatch[5], dmsMatch[6], dmsMatch[7], dmsMatch[8]);
+      return `${lat},${lng}`;
+    }
+
+    // A full Google Maps URL often has the coordinates in an "@lat,lng,zoom"
+    // segment, or in a q=/query= parameter -- pull them out if present.
+    const atMatch = raw.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (atMatch) return `${atMatch[1]},${atMatch[2]}`;
+
+    const paramMatch = raw.match(/[?&](?:q|query)=(-?\d+\.\d+)[,%](?:2C)?(-?\d+\.\d+)/i);
+    if (paramMatch) return `${paramMatch[1]},${paramMatch[2]}`;
+
+    // Not a recognizable coordinate/URL format -- if it's not a URL at all,
+    // treat it as free-text (an address or place name) and use it directly.
+    if (!/^https?:\/\//i.test(raw)) return raw;
+
+    // Otherwise it's some URL we can't extract coordinates from (most
+    // commonly a shortened maps.app.goo.gl link) -- can't use it safely.
+    return null;
   }
 
-  const dmsMatch = str.match(
-    /(\d+)[°ºd]\s*(\d+)['′m]\s*([\d.]+)["″s]?\s*([NSns])[,\s]+(\d+)[°ºd]\s*(\d+)['′m]\s*([\d.]+)["″s]?\s*([EWew])/
-  );
-  if (dmsMatch) {
-    const toDecimal = (deg, min, sec, dir) => {
-      const magnitude = Number(deg) + Number(min) / 60 + Number(sec) / 3600;
-      return /[SWsw]/.test(dir) ? -magnitude : magnitude;
-    };
-    return {
-      lat: toDecimal(dmsMatch[1], dmsMatch[2], dmsMatch[3], dmsMatch[4]),
-      lng: toDecimal(dmsMatch[5], dmsMatch[6], dmsMatch[7], dmsMatch[8]),
-    };
-  }
-
-  return null;
+  // "coordinates" was blank -- fall back to the address text itself.
+  const address = (addressFallback || "").trim();
+  return address || null;
 }
 
-/** Builds a free, no-API-key Google Maps embed URL for one coordinate pair. */
-function buildMapEmbedUrl(lat, lng) {
-  return `https://www.google.com/maps?q=${lat},${lng}&z=16&output=embed`;
+/** Builds a free, no-API-key Google Maps embed URL for a location query
+ *  (either "lat,lng" or free-text address/place name). */
+function buildMapEmbedUrl(query) {
+  return `https://www.google.com/maps?q=${encodeURIComponent(query)}&z=16&output=embed`;
 }
 
 /** Builds a normal (non-embed) Google Maps URL -- opens the full site/app,
  *  with directions available, in a new tab. */
-function buildMapLinkUrl(lat, lng) {
-  return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+function buildMapLinkUrl(query) {
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 }
 
 /** Renders the branch list + wires up clicks to swap the embedded map. */
@@ -333,8 +371,8 @@ function renderBranches(rows) {
   if (!listEl || !frameEl || !emptyEl) return;
 
   const branches = sortByOrder(rows)
-    .map((row) => ({ ...row, coords: parseCoordinates(row.coordinates) }))
-    .filter((row) => row.name && row.coords);
+    .map((row) => ({ ...row, mapQuery: resolveMapQuery(row.coordinates, row.address) }))
+    .filter((row) => row.name && row.mapQuery);
 
   if (!branches.length) return; // leave the static fallback list in index.html untouched
 
@@ -342,7 +380,7 @@ function renderBranches(rows) {
     .map((row, i) => {
       const kind = row.kind ? `<span class="kind">${escapeHtml(row.kind)}</span>` : "";
       const active = i === 0 ? " is-active" : "";
-      return `<button type="button" class="branch-entry${active}" data-lat="${row.coords.lat}" data-lng="${row.coords.lng}">
+      return `<button type="button" class="branch-entry${active}" data-query="${escapeHtml(row.mapQuery)}">
         ${kind}
         <h4>${escapeHtml(row.name)}</h4>
         <p>${escapeHtml(row.address || "")}</p>
@@ -351,13 +389,12 @@ function renderBranches(rows) {
     .join("");
 
   const showBranch = (btn) => {
-    const lat = btn.getAttribute("data-lat");
-    const lng = btn.getAttribute("data-lng");
-    frameEl.src = buildMapEmbedUrl(lat, lng);
+    const query = btn.getAttribute("data-query");
+    frameEl.src = buildMapEmbedUrl(query);
     frameEl.hidden = false;
     emptyEl.hidden = true;
     if (linkEl) {
-      linkEl.href = buildMapLinkUrl(lat, lng);
+      linkEl.href = buildMapLinkUrl(query);
       linkEl.hidden = false;
     }
     listEl.querySelectorAll(".branch-entry").forEach((el) => el.classList.remove("is-active"));
@@ -420,7 +457,7 @@ async function initSheetImages() {
       }
     });
   } catch (err) {
-    console.error("[weasi] Failed to load images from Google Sheets:", err);
+    console.error("[slsc] Failed to load images from Google Sheets:", err);
     // Fail quietly on the page itself -- a broken sheet link should never
     // take down the rest of the site. Empty-state messages stay visible.
   }
