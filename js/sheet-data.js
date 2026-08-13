@@ -232,7 +232,7 @@ function sortByOrder(rows) {
 function renderGrid(container, rows) {
   if (!rows.length) {
     container.innerHTML = '<p class="gallery-empty">Loading images....</p>';
-    /**container.innerHTML = '<p class="gallery-empty">No images yet -- add rows to the Google Sheet with this category to fill this section.</p>'; *//
+    /**container.innerHTML = '<p class="gallery-empty">No images yet -- add rows to the Google Sheet with this category to fill this section.</p>'; */
     return;
   }
   container.innerHTML = rows
