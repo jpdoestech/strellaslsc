@@ -537,6 +537,48 @@ textarea:focus-visible {
   gap: var(--space-sm);
 }
 
+/* "View more" button -- added below .gallery-grid / .branch-photos by
+   js/sheet-data.js (setupViewMore) whenever a photo set is taller than 2
+   rows. Styled to work on both a light section (gallery) and a dark one
+   (branches) via the .section--dark override below, since the same
+   function is reused for both grids. */
+.view-more-wrap {
+  text-align: center;
+  margin-top: var(--space-md);
+}
+
+.view-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 0.7rem 1.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--white);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.view-more-btn:hover {
+  background: var(--paper-dim);
+  transform: translateY(-1px);
+}
+
+.section--dark .view-more-btn {
+  border-color: var(--line-dark);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--white);
+}
+
+.section--dark .view-more-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
 .gallery-grid figure {
   position: relative;
   aspect-ratio: 4 / 3;
