@@ -349,6 +349,100 @@ function renderGrid(container, rows) {
       showAt(0);
     });
   });
+
+  setupViewMore(container);
+}
+
+/** How many full rows of cards show before a "View more" button appears.
+ *  2 rows regardless of device -- the actual number of cards that means
+ *  (8 on a 4-column desktop grid, 6 on a 3-column tablet grid, 4 on a
+ *  2-column phone grid) is worked out live from the grid's own CSS in
+ *  setupViewMore below, rather than hardcoded per breakpoint here. */
+const ROWS_TO_SHOW_INITIALLY = 2;
+
+/**
+ * Collapses a photo grid down to ROWS_TO_SHOW_INITIALLY rows and adds a
+ * "View more" button beneath it to reveal the rest -- keeps a long photo
+ * set from being one huge scroll. Works out how many cards fit per row by
+ * reading the grid's own computed `grid-template-columns` (so it stays
+ * correct across desktop/tablet/phone without duplicating breakpoint
+ * numbers here), and re-checks that on window resize/orientation change
+ * as long as the visitor hasn't already clicked to expand it.
+ */
+function setupViewMore(container) {
+  // Remove any leftover button from a previous render of this same
+  // container (e.g. if the sheet is re-fetched later) before adding a
+  // fresh one, so they don't stack up.
+  const existingWrap = container.nextElementSibling;
+  if (existingWrap && existingWrap.classList.contains("view-more-wrap")) {
+    existingWrap.remove();
+  }
+
+  const figures = Array.from(container.querySelectorAll(":scope > figure"));
+  if (figures.length < 2) return; // nothing worth collapsing
+
+  let expanded = false;
+
+  const getColumnCount = () => {
+    const template = getComputedStyle(container).gridTemplateColumns;
+    const tokens = template ? template.split(" ").filter(Boolean) : [];
+    // Real browsers resolve grid-template-columns into one CSS length per
+    // track (e.g. "300px 300px 300px 300px") -- check the tokens actually
+    // look like that, not just that there happen to be 2+ of them, since
+    // an unresolved value like "repeat(4, 1fr)" also splits into 2 tokens
+    // by whitespace but isn't a real per-column list.
+    const looksResolved = tokens.length >= 2 && tokens.every((t) => /^[\d.]+(px|fr|%|em|rem)?$/.test(t));
+    if (looksResolved) return tokens.length;
+    // Fallback (only reached if the browser didn't resolve the value as
+    // expected): mirror the same breakpoints used in css/style.css.
+    const width = window.innerWidth;
+    if (width <= 640) return 2;
+    if (width <= 960) return 3;
+    return 4;
+  };
+
+  const wrap = document.createElement("div");
+  wrap.className = "view-more-wrap";
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "view-more-btn";
+  wrap.appendChild(button);
+  container.insertAdjacentElement("afterend", wrap);
+
+  const applyCollapse = () => {
+    if (expanded) return;
+    const visibleCount = getColumnCount() * ROWS_TO_SHOW_INITIALLY;
+    figures.forEach((fig, i) => {
+      fig.hidden = i >= visibleCount;
+    });
+    const hiddenCount = Math.max(figures.length - visibleCount, 0);
+    wrap.hidden = hiddenCount === 0;
+    button.textContent = `View more photos (${hiddenCount} more)`;
+  };
+
+  button.addEventListener("click", () => {
+    expanded = !expanded;
+    if (expanded) {
+      figures.forEach((fig) => {
+        fig.hidden = false;
+      });
+      button.textContent = "View less";
+    } else {
+      applyCollapse();
+      // Scroll the (now-collapsed) grid back into view rather than
+      // leaving the visitor stranded below the fold where the button was.
+      container.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  });
+
+  applyCollapse();
+
+  let resizeTimer = null;
+  window.addEventListener("resize", () => {
+    if (expanded) return;
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(applyCollapse, 150);
+  });
 }
 
 /** Sets the first matching row's image as a CSS background (used for the hero). */
