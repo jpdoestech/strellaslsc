@@ -524,17 +524,24 @@
 </footer>
 
 <!--
-  LIGHTBOX MARKUP (enlarged image view)
+  LIGHTBOX MARKUP (enlarged image view, with a swipeable multi-photo
+  carousel for any card that groups more than one photo)
   Empty by default -- js/main.js fills #lightbox-image / #lightbox-caption
   and toggles the "is-open" class whenever a visitor clicks a photo in the
   gallery or branch photo grids. Sits once at the end of the page and is
-  reused for every image, rather than one lightbox per photo.
+  reused for every image/group, rather than one lightbox per photo.
+  #lightbox-prev / #lightbox-next / #lightbox-counter are only shown (via
+  the "hidden" attribute, toggled in js/main.js) when the clicked card
+  actually has more than one photo in it.
 -->
 <div class="lightbox" id="lightbox" aria-hidden="true">
   <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Close enlarged image">&times;</button>
+  <button type="button" class="lightbox-nav lightbox-prev" id="lightbox-prev" aria-label="Previous photo" hidden>&#8249;</button>
+  <button type="button" class="lightbox-nav lightbox-next" id="lightbox-next" aria-label="Next photo" hidden>&#8250;</button>
   <div class="lightbox-inner">
     <img src="" alt="" id="lightbox-image">
     <figcaption id="lightbox-caption"></figcaption>
+    <p class="lightbox-counter" id="lightbox-counter" hidden></p>
   </div>
 </div>
 

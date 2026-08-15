@@ -568,13 +568,38 @@ textarea:focus-visible {
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.65), transparent);
 }
 
+.gallery-grid figcaption:empty,
+.branch-photos figcaption:empty {
+  display: none;
+}
+
+/* Small "1/4" style badge -- shown on any card that groups more than one
+   photo under the same whole-number "order" value (e.g. order 1, 1.1, 1.2
+   in the Google Sheet all become ONE card with 3 photos). Its number
+   updates live while hovering, tracking whichever photo is currently
+   showing. */
+.photo-count {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(5, 15, 30, 0.68);
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+}
+
 .gallery-grid img,
 .branch-photos img {
   cursor: zoom-in;
 }
 
 /* ---------------------------------------------------------------------------
-   LIGHTBOX (enlarged image view on click)
+   LIGHTBOX (enlarged image view on click, with swipeable multi-photo
+   carousel when a card groups more than one photo)
    Works on any image inside .gallery-grid or .branch-photos, including ones
    added later by js/sheet-data.js from your Google Sheet -- see the click
    listener in js/main.js, which uses event delegation so it doesn't need to
@@ -618,6 +643,14 @@ textarea:focus-visible {
   padding: 0;
 }
 
+.lightbox-counter {
+  color: var(--gold);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-align: center;
+  margin-top: 0.35rem;
+}
+
 .lightbox-inner {
   display: flex;
   flex-direction: column;
@@ -645,9 +678,48 @@ textarea:focus-visible {
   background: rgba(255, 255, 255, 0.22);
 }
 
+/* Prev/next arrows -- only shown (via the "hidden" attribute, toggled in
+   js/main.js) when the current card has more than one photo. */
+.lightbox-nav {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--white);
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.lightbox-nav:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.lightbox-prev {
+  left: var(--space-md);
+}
+
+.lightbox-next {
+  right: var(--space-md);
+}
+
 @media (max-width: 640px) {
   .lightbox img {
     max-height: 72vh;
+  }
+
+  /* Arrows sit closer to the edges on phones, out of the way of a swipe
+     gesture (swiping is the primary way to move between photos here). */
+  .lightbox-prev {
+    left: var(--space-xs);
+  }
+
+  .lightbox-next {
+    right: var(--space-xs);
   }
 }
 

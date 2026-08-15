@@ -113,25 +113,81 @@ document.addEventListener("DOMContentLoaded", () => {
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   /* --------------------------------- Lightbox ------------------------------
-     Enlarges any image inside .gallery-grid or .branch-photos when clicked
-     -- mainly for mobile, where the grid thumbnails are too small to make
-     out clearly. Uses event delegation (one listener on document) instead
-     of binding to each <img> individually, because the images in those two
-     grids are added later by js/sheet-data.js from the Google Sheet -- a
-     per-image listener set up here at page load would miss them entirely.
+     Enlarges any image inside .gallery-grid or .branch-photos when clicked.
+     If the clicked card groups more than one photo (see groupRowsByOrder in
+     js/sheet-data.js -- rows sharing the same whole-number "order" value),
+     this opens as a swipeable carousel with prev/next arrows, a "2 / 5"
+     counter, keyboard arrow-key support, and touch swipe -- rather than
+     just a single static image.
+
+     Uses event delegation (one listener on document) instead of binding to
+     each <img> individually, because the images in those two grids are
+     added later by js/sheet-data.js from the Google Sheet -- a per-image
+     listener set up here at page load would miss them entirely.
   --------------------------------------------------------------------------- */
   const lightbox = document.getElementById("lightbox");
   const lightboxImage = document.getElementById("lightbox-image");
   const lightboxCaption = document.getElementById("lightbox-caption");
+  const lightboxCounter = document.getElementById("lightbox-counter");
   const lightboxClose = document.getElementById("lightbox-close");
+  const lightboxPrev = document.getElementById("lightbox-prev");
+  const lightboxNext = document.getElementById("lightbox-next");
 
   if (lightbox && lightboxImage && lightboxClose) {
-    const openLightbox = (img) => {
-      lightboxImage.src = img.currentSrc || img.src;
-      lightboxImage.alt = img.alt || "";
-      const figure = img.closest("figure");
-      const captionEl = figure ? figure.querySelector("figcaption") : null;
-      lightboxCaption.textContent = captionEl ? captionEl.textContent : "";
+    let currentPhotos = [];
+    let currentIndex = 0;
+
+    const renderCurrentPhoto = () => {
+      const photo = currentPhotos[currentIndex];
+      if (!photo) return;
+      lightboxImage.src = photo.src;
+      lightboxImage.alt = photo.caption || "";
+      lightboxCaption.textContent = photo.caption || "";
+
+      const hasMultiple = currentPhotos.length > 1;
+      if (lightboxCounter) {
+        lightboxCounter.textContent = `${currentIndex + 1} / ${currentPhotos.length}`;
+        lightboxCounter.hidden = !hasMultiple;
+      }
+      if (lightboxPrev) lightboxPrev.hidden = !hasMultiple;
+      if (lightboxNext) lightboxNext.hidden = !hasMultiple;
+    };
+
+    const showNext = () => {
+      if (currentPhotos.length < 2) return;
+      currentIndex = (currentIndex + 1) % currentPhotos.length;
+      renderCurrentPhoto();
+    };
+
+    const showPrev = () => {
+      if (currentPhotos.length < 2) return;
+      currentIndex = (currentIndex - 1 + currentPhotos.length) % currentPhotos.length;
+      renderCurrentPhoto();
+    };
+
+    const openLightbox = (figure, startIndex) => {
+      let photos = [];
+      try {
+        photos = JSON.parse(decodeURIComponent(figure.dataset.images || ""));
+      } catch (e) {
+        photos = [];
+      }
+      // Fallback for any figure without data-images (shouldn't normally
+      // happen, but keeps this working even on hand-edited markup): build
+      // a single-photo "gallery" straight from the <img>/<figcaption>.
+      if (!photos.length) {
+        const img = figure.querySelector("img");
+        const captionEl = figure.querySelector("figcaption");
+        if (img) {
+          photos = [{ src: img.currentSrc || img.src, caption: captionEl ? captionEl.textContent : "" }];
+        }
+      }
+      if (!photos.length) return;
+
+      currentPhotos = photos;
+      currentIndex = Math.min(Math.max(startIndex || 0, 0), photos.length - 1);
+      renderCurrentPhoto();
+
       lightbox.classList.add("is-open");
       lightbox.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
@@ -147,21 +203,50 @@ document.addEventListener("DOMContentLoaded", () => {
     // image inside these two grids.
     document.addEventListener("click", (e) => {
       const img = e.target.closest(".gallery-grid img, .branch-photos img");
-      if (img) openLightbox(img);
+      if (!img) return;
+      const figure = img.closest("figure");
+      if (!figure) return;
+      openLightbox(figure, Number(figure.dataset.index || 0));
     });
 
     lightboxClose.addEventListener("click", closeLightbox);
+    if (lightboxPrev) lightboxPrev.addEventListener("click", showPrev);
+    if (lightboxNext) lightboxNext.addEventListener("click", showNext);
 
     // Click on the dark backdrop (but not the image itself) also closes it.
     lightbox.addEventListener("click", (e) => {
       if (e.target === lightbox) closeLightbox();
     });
 
-    // Esc key closes it too.
+    // Esc closes it; left/right arrow keys move through a multi-photo card.
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && lightbox.classList.contains("is-open")) {
-        closeLightbox();
-      }
+      if (!lightbox.classList.contains("is-open")) return;
+      if (e.key === "Escape") closeLightbox();
+      if (e.key === "ArrowRight") showNext();
+      if (e.key === "ArrowLeft") showPrev();
     });
+
+    // Touch swipe -- left swipe = next photo, right swipe = previous.
+    let touchStartX = null;
+    lightbox.addEventListener(
+      "touchstart",
+      (e) => {
+        touchStartX = e.changedTouches[0].clientX;
+      },
+      { passive: true }
+    );
+    lightbox.addEventListener(
+      "touchend",
+      (e) => {
+        if (touchStartX === null) return;
+        const deltaX = e.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(deltaX) > 40) {
+          if (deltaX < 0) showNext();
+          else showPrev();
+        }
+        touchStartX = null;
+      },
+      { passive: true }
+    );
   }
 });

@@ -28,8 +28,21 @@
                       also works fine.
       - caption    : text shown at the bottom of the image on the site
                       (optional -- leave blank for no caption)
-      - order      : a number (1, 2, 3 ...) controlling display order within
-                      its category (optional -- blank rows sort last)
+      - order      : a number controlling display order AND grouping multiple
+                      photos into one card. Rows sharing the same WHOLE
+                      number all become a single card that visitors can
+                      flip through:
+                        1, 1.1, 1.2   -> one card, 3 photos
+                        2             -> a separate card, 1 photo
+                        3, 3.1        -> a separate card, 2 photos
+                      A card with more than one photo shows a small "1/3"
+                      badge, automatically cycles through its photos every
+                      1.2 seconds while a visitor hovers over it, and opens
+                      as a swipeable carousel (with the same counter) when
+                      clicked. A single-photo card just behaves like a
+                      normal photo, same as before.
+                      (optional column -- blank rows sort last, and each
+                      sort into its own separate single-photo card)
 
    2. In Google Sheets: File > Share > Publish to web.
       - Under "Link", choose the specific sheet/tab (not "Entire Document").
@@ -228,21 +241,114 @@ function sortByOrder(rows) {
   });
 }
 
-/** Renders a grid of <figure><img></figure> cards into a container. */
+/**
+ * Groups rows into photo sets by the WHOLE-NUMBER part of "order" -- so
+ * rows with order 1, 1.1, and 1.2 all become one card with 3 photos
+ * (shown as one tile, cycling on hover, opening as a swipeable carousel
+ * when clicked), while order 2 becomes its own separate single-photo card.
+ * A blank/non-numeric "order" always gets its own group (never merged
+ * with anything else). Groups are then ordered by their lowest order
+ * value, and photos within a group are ordered by their full order value
+ * (so 1, then 1.1, then 1.2, etc.).
+ */
+function groupRowsByOrder(rows) {
+  const groups = [];
+  const indexByKey = new Map();
+
+  rows.forEach((row) => {
+    const orderNum = row.order === "" ? NaN : Number(row.order);
+    const isNumeric = Number.isFinite(orderNum);
+    const key = isNumeric ? `n${Math.floor(orderNum)}` : `u${groups.length}`;
+
+    if (!indexByKey.has(key)) {
+      indexByKey.set(key, groups.length);
+      groups.push({ minOrder: isNumeric ? orderNum : Infinity, items: [] });
+    }
+    const group = groups[indexByKey.get(key)];
+    group.items.push(row);
+    if (isNumeric) group.minOrder = Math.min(group.minOrder, orderNum);
+  });
+
+  groups.forEach((group) => {
+    group.items = sortByOrder(group.items);
+  });
+  groups.sort((a, b) => a.minOrder - b.minOrder);
+
+  return groups;
+}
+
+/** Renders a grid of <figure><img></figure> cards into a container -- one
+ *  card per photo GROUP (see groupRowsByOrder), not necessarily one card
+ *  per row. Cards with more than one photo get a "1/N" badge, cycle
+ *  through their photos automatically on hover, and open as a swipeable
+ *  carousel in the lightbox (see js/main.js) when clicked. */
 function renderGrid(container, rows) {
   if (!rows.length) {
     container.innerHTML = '<p class="gallery-empty">Loading images....</p>';
     /**container.innerHTML = '<p class="gallery-empty">No images yet -- add rows to the Google Sheet with this category to fill this section.</p>'; */
     return;
   }
-  container.innerHTML = rows
-    .map((row) => {
-      const caption = row.caption
-        ? `<figcaption>${escapeHtml(row.caption)}</figcaption>`
-        : "";
-      return `<figure><img src="${escapeHtml(row.image_url)}" alt="${escapeHtml(row.caption || row.title || "SLSC")}" loading="lazy">${caption}</figure>`;
+
+  const groups = groupRowsByOrder(rows);
+
+  container.innerHTML = groups
+    .map((group) => {
+      const images = group.items.map((row) => ({
+        src: row.image_url,
+        caption: row.caption || row.title || "",
+      }));
+      const first = images[0];
+      const badge = images.length > 1 ? `<span class="photo-count">1/${images.length}</span>` : "";
+      // The full photo list travels with the card as a URL-encoded JSON
+      // blob in data-images -- encodeURIComponent handles quotes/special
+      // characters safely inside the HTML attribute with no extra
+      // escaping needed. js/main.js reads this back out on click.
+      const dataImages = encodeURIComponent(JSON.stringify(images));
+      return `<figure data-images="${dataImages}" data-index="0">
+        <img src="${escapeHtml(first.src)}" alt="${escapeHtml(first.caption || "SLSC")}" loading="lazy">
+        ${badge}
+        <figcaption>${escapeHtml(first.caption)}</figcaption>
+      </figure>`;
     })
     .join("");
+
+  // Hover-to-preview: for any card with more than one photo, cycle through
+  // them automatically every 1.2s while the pointer stays over the card,
+  // and reset back to the first photo on mouse-out.
+  container.querySelectorAll("figure[data-images]").forEach((figure) => {
+    let images;
+    try {
+      images = JSON.parse(decodeURIComponent(figure.dataset.images));
+    } catch (e) {
+      images = [];
+    }
+    if (images.length < 2) return; // nothing to cycle
+
+    const imgEl = figure.querySelector("img");
+    const captionEl = figure.querySelector("figcaption");
+    const badgeEl = figure.querySelector(".photo-count");
+    let hoverTimer = null;
+
+    const showAt = (i) => {
+      figure.dataset.index = String(i);
+      imgEl.src = images[i].src;
+      if (captionEl) captionEl.textContent = images[i].caption;
+      if (badgeEl) badgeEl.textContent = `${i + 1}/${images.length}`;
+    };
+
+    figure.addEventListener("mouseenter", () => {
+      let i = Number(figure.dataset.index || 0);
+      hoverTimer = setInterval(() => {
+        i = (i + 1) % images.length;
+        showAt(i);
+      }, 1200);
+    });
+
+    figure.addEventListener("mouseleave", () => {
+      clearInterval(hoverTimer);
+      showAt(0);
+    });
+  });
 }
 
 /** Sets the first matching row's image as a CSS background (used for the hero). */
