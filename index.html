@@ -93,7 +93,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <link rel="icon" type="image/png" href="assets/logo-icon.png">
-<link rel="stylesheet" href="css/style.css">
+<!-- The "?v=2" on the line below is a cache-buster: browsers (and CDNs like
+     Vercel's) cache CSS files aggressively, so after editing style.css a
+     visitor's browser can keep showing the OLD version even after a hard
+     refresh. Bump this number (v=3, v=4, ...) any time style.css changes
+     and you want to guarantee everyone gets the fresh version immediately,
+     instead of whatever was previously cached. -->
+<link rel="stylesheet" href="css/style.css?v=2">
 </head>
 <body>
 
