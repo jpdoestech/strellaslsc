@@ -66,6 +66,16 @@ const SHEET_CONFIG = {
   // How long (in minutes) to cache the fetched sheet in the visitor's
   // browser (localStorage) before re-fetching. Set to 0 to always fetch
   // fresh. Caching keeps the site fast on repeat visits.
+  //
+  // This number is also the worst-case delay before a photo you've
+  // replaced/cropped in Drive shows up for a REPEAT visitor -- every image
+  // URL automatically gets a cache-busting parameter tied to this fetch
+  // cycle (see withCacheBust/loadSheetRows below), so stale photos are no
+  // longer a "clear your cache and hope" problem. A brand-new visitor
+  // always sees the latest version immediately regardless of this value.
+  // Lower it (e.g. to 2) if you're actively swapping photos and want
+  // faster turnaround; the tradeoff is a few more small CSV fetches for
+  // visitors, which is a non-issue at this site's scale.
   CACHE_MINUTES: 10,
   // -------------------------------------------------------------------------
 };
@@ -198,17 +208,34 @@ function rowsToObjects(rows) {
   });
 }
 
-/** Fetches and caches the sheet CSV, returning an array of row objects. */
+/** Appends an automatic cache-busting parameter to an image URL, so that
+ *  whenever the sheet data is freshly re-fetched (see loadSheetRows below),
+ *  every visitor's browser treats the image as a brand-new URL and fetches
+ *  it fresh -- instead of possibly holding onto an old cached copy of a
+ *  photo you've since replaced/cropped in Drive, for hours or indefinitely.
+ *  `version` is the sheet's own fetchedAt timestamp, so this costs nothing
+ *  extra to compute and updates automatically on the same schedule the
+ *  sheet itself refreshes (CACHE_MINUTES, below) -- no manual "?v=2"
+ *  bumping needed from you, unlike a normal CSS/JS cache-buster. */
+function withCacheBust(url, version) {
+  if (!url || !version) return url;
+  const separator = url.includes("?") ? "&" : "?";
+  return `${url}${separator}_cb=${version}`;
+}
+
+/** Fetches and caches the sheet CSV, returning { rows, fetchedAt }.
+ *  fetchedAt is reused by renderGrid/renderBackground as an automatic
+ *  cache-busting value for image URLs -- see withCacheBust above. */
 async function loadSheetRows() {
   const { SHEET_CSV_URL, CACHE_MINUTES } = SHEET_CONFIG;
-  if (!SHEET_CSV_URL) return [];
+  if (!SHEET_CSV_URL) return { rows: [], fetchedAt: null };
 
   const cacheKey = "slsc_sheet_cache_v1";
   if (CACHE_MINUTES > 0) {
     try {
       const cached = JSON.parse(localStorage.getItem(cacheKey) || "null");
       if (cached && Date.now() - cached.fetchedAt < CACHE_MINUTES * 60 * 1000) {
-        return cached.rows;
+        return { rows: cached.rows, fetchedAt: cached.fetchedAt };
       }
     } catch (e) {
       /* corrupt cache entry -- ignore and re-fetch */
@@ -221,15 +248,16 @@ async function loadSheetRows() {
   }
   const text = await response.text();
   const rows = rowsToObjects(parseCsv(text));
+  const fetchedAt = Date.now();
 
   if (CACHE_MINUTES > 0) {
     try {
-      localStorage.setItem(cacheKey, JSON.stringify({ fetchedAt: Date.now(), rows }));
+      localStorage.setItem(cacheKey, JSON.stringify({ fetchedAt, rows }));
     } catch (e) {
       /* storage full or unavailable -- non-fatal, just skip caching */
     }
   }
-  return rows;
+  return { rows, fetchedAt };
 }
 
 /** Sorts rows for one category by their "order" column (numeric, blanks last). */
@@ -282,7 +310,7 @@ function groupRowsByOrder(rows) {
  *  per row. Cards with more than one photo get a "1/N" badge, cycle
  *  through their photos automatically on hover, and open as a swipeable
  *  carousel in the lightbox (see js/main.js) when clicked. */
-function renderGrid(container, rows) {
+function renderGrid(container, rows, cacheVersion) {
   if (!rows.length) {
     container.innerHTML = '<p class="gallery-empty">Loading images....</p>';
     /**container.innerHTML = '<p class="gallery-empty">No images yet -- add rows to the Google Sheet with this category to fill this section.</p>'; */
@@ -294,7 +322,7 @@ function renderGrid(container, rows) {
   container.innerHTML = groups
     .map((group) => {
       const images = group.items.map((row) => ({
-        src: row.image_url,
+        src: withCacheBust(row.image_url, cacheVersion),
         caption: row.caption || row.title || "",
       }));
       const first = images[0];
@@ -446,9 +474,9 @@ function setupViewMore(container) {
 }
 
 /** Sets the first matching row's image as a CSS background (used for the hero). */
-function renderBackground(container, rows) {
+function renderBackground(container, rows, cacheVersion) {
   if (!rows.length) return; // keep the CSS gradient fallback already in place
-  container.style.backgroundImage = `url("${rows[0].image_url}")`;
+  container.style.backgroundImage = `url("${withCacheBust(rows[0].image_url, cacheVersion)}")`;
   container.style.opacity = "0.45";
 }
 
@@ -654,7 +682,7 @@ async function initSheetImages() {
   }
 
   try {
-    const rows = await loadSheetRows();
+    const { rows, fetchedAt } = await loadSheetRows();
 
     Object.entries(CATEGORY_MAP).forEach(([category, config]) => {
       const container = document.getElementById(config.containerId);
@@ -665,9 +693,9 @@ async function initSheetImages() {
       );
 
       if (config.mode === "grid") {
-        renderGrid(container, rowsForCategory);
+        renderGrid(container, rowsForCategory, fetchedAt);
       } else if (config.mode === "background") {
-        renderBackground(container, rowsForCategory);
+        renderBackground(container, rowsForCategory, fetchedAt);
       }
     });
   } catch (err) {
