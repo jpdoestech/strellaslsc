@@ -949,10 +949,30 @@ textarea:focus-visible {
   gap: var(--space-sm);
 }
 
-.branch-photos img {
-  border-radius: var(--radius);
+/* Same fixed-tile treatment as .gallery-grid figure/img above -- the size
+   constraint lives on the FIGURE wrapper (not the <img> directly), so
+   every tile renders at the same size and shape in the grid no matter
+   what dimensions the original uploaded photo actually is. Cropping
+   happens visually only (object-fit: cover); clicking a tile opens the
+   lightbox, which shows the photo at its real, uncropped proportions
+   (object-fit: contain there) -- see .lightbox img further down. */
+.branch-photos figure {
+  position: relative;
   aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.04); /* shows while the image loads, on this dark section */
+}
+
+.branch-photos img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.branch-photos figure:hover img {
+  transform: scale(1.06);
 }
 
 /* ---------------------------------------------------------------------------
