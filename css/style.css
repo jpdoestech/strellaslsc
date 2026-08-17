@@ -598,7 +598,8 @@ textarea:focus-visible {
   transform: scale(1.06);
 }
 
-.gallery-grid figcaption {
+.gallery-grid figcaption,
+.branch-photos figcaption {
   position: absolute;
   left: 0;
   right: 0;
