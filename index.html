@@ -507,7 +507,7 @@
         inbox with no backend server required. Until then, the form falls
         back to opening the visitor's email client instead (see js/main.js).
       -->
-      <form class="contact-form" id="contact-form" action="https://formspree.io/f/xeajgyzp" method="POST">
+      <form class="contact-form" id="contact-form" action="/api/submit" method="POST">
         <div>
           <label for="name">Name *</label>
           <input type="text" id="name" name="name" required>
@@ -523,6 +523,13 @@
         <div>
           <label for="message">Message</label>
           <textarea id="message" name="message"></textarea>
+        </div>
+        <div class="form-captcha">
+          <!-- ALTCHA -- free, open-source, privacy-friendly captcha widget.
+               It fetches a puzzle from /api/challenge and solves it in the
+               visitor's browser; /api/submit checks the answer server-side
+               before the message is forwarded to Formspree. -->
+          <altcha-widget challengeurl="/api/challenge"></altcha-widget>
         </div>
         <button type="submit" class="btn btn--gold">Send message</button>
         <p class="form-status" role="status" aria-live="polite"></p>
@@ -585,6 +592,7 @@
   </div>
 </div>
 
+<script async defer src="https://cdn.jsdelivr.net/npm/altcha/dist/altcha.min.js" type="module"></script>
 <script src="js/sheet-data.js"></script>
 <script src="js/main.js"></script>
 </body>

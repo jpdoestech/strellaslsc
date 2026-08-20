@@ -1,0 +1,8 @@
+{
+  "name": "strellaslsc",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "altcha-lib": "^1.2.0"
+  }
+}

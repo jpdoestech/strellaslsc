@@ -65,40 +65,41 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       const status = form.querySelector(".form-status");
       const button = form.querySelector('button[type="submit"]');
-      const endpoint = form.getAttribute("action");
+      const data = new FormData(form);
 
-      // If no real endpoint has been configured yet, tell the developer
-      // (not the visitor) via the console, and fall back to a mailto link
-      // so the form still "works" during setup.
-      if (!endpoint || endpoint.includes("YOUR_FORM_ID")) {
-        console.warn(
-          "[slsc] Contact form has no live endpoint yet. Set the form's " +
-            "action= attribute in index.html to a Formspree endpoint " +
-            "(https://formspree.io/f/xeajgyzp) or your own form backend."
-        );
-        const data = new FormData(form);
-        const subject = encodeURIComponent(data.get("subject") || "Website inquiry");
-        const body = encodeURIComponent(
-          `Name: ${data.get("name")}\nEmail: ${data.get("email")}\n\n${data.get("message")}`
-        );
-        window.location.href = `mailto:strellas_davaomain@outlook.com?subject=${subject}&body=${body}`;
+      // The <altcha-widget> renders a hidden input named "altcha" inside
+      // the form once the visitor's browser has solved the puzzle. If it's
+      // missing, they haven't completed (or haven't finished) the captcha.
+      const altcha = data.get("altcha");
+      if (!altcha) {
+        if (status) status.textContent = "Please complete the \u201cI'm not a robot\u201d check above.";
         return;
       }
 
       button.disabled = true;
       if (status) status.textContent = "Sending...";
 
+      const payload = {
+        name: data.get("name"),
+        email: data.get("email"),
+        subject: data.get("subject"),
+        message: data.get("message"),
+        altcha,
+      };
+
       try {
-        const response = await fetch(endpoint, {
+        const response = await fetch("/api/submit", {
           method: "POST",
-          body: new FormData(form),
-          headers: { Accept: "application/json" },
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
         });
+        const result = await response.json().catch(() => ({}));
+
         if (response.ok) {
           form.reset();
           if (status) status.textContent = "Thanks -- your message has been sent.";
         } else {
-          if (status) status.textContent = "Something went wrong. Please email us directly.";
+          if (status) status.textContent = result.error || "Something went wrong. Please email us directly.";
         }
       } catch (err) {
         if (status) status.textContent = "Something went wrong. Please email us directly.";
