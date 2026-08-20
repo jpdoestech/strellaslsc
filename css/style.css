@@ -531,45 +531,75 @@ textarea:focus-visible {
 /* Core Values -- 4 cards spelling S-L-S-C (Strellas Labor Service
    Cooperative's own initials). Distinct from .service-list on purpose:
    this is a branding moment worth calling out visually rather than
-   reusing the plain services-list row style. */
+   reusing the plain services-list row style.
+
+   Each card is a horizontal row (icon, then letter badge, then text) --
+   2 columns on desktop/tablet (reading order: S, L on top / S, C on
+   bottom), collapsing to a single column on phones (see the max-width:
+   640px override further down) so the acronym reads top-to-bottom in
+   order: S, L, S, C -- no ambiguity for a visitor scrolling on mobile. */
 .values-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: var(--space-md);
   margin-top: var(--space-lg);
 }
 
 .value-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
   background: var(--white);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: var(--space-md);
-  text-align: center;
+  padding: var(--space-sm) var(--space-md);
+  text-align: left;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .value-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
   box-shadow: 0 14px 32px rgba(11, 37, 69, 0.1);
 }
 
-.value-card .letter {
-  display: inline-flex;
+/* Small hand-drawn SVG icon, circled -- see the <svg> markup inline in
+   index.html for each card. Purely decorative (aria-hidden), so the
+   letter badge next to it still carries the meaning for screen readers. */
+.value-icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--ink), var(--sea));
-  color: var(--gold);
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.7rem;
-  margin: 0 auto var(--space-sm);
+  color: var(--ink);
 }
 
-.value-card p {
-  font-size: 0.9rem;
+.value-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.value-letter {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--ink), var(--sea));
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+.value-text p {
+  margin: 0;
+  font-size: 0.88rem;
   color: var(--muted);
 }
 
@@ -1219,8 +1249,7 @@ textarea:focus-visible {
   }
 
   .people-grid,
-  .board-grid,
-  .values-grid {
+  .board-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -1297,7 +1326,8 @@ textarea:focus-visible {
   }
 
   .people-grid,
-  .board-grid {
+  .board-grid,
+  .values-grid {
     grid-template-columns: 1fr;
   }
 
