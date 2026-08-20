@@ -1057,7 +1057,7 @@ textarea:focus-visible {
 }
 
 .branch-photos figure:hover img {
-  transform: scale(1.06);
+  transform: scale(.08);
 }
 
 /* ---------------------------------------------------------------------------
