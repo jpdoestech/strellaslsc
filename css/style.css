@@ -528,6 +528,60 @@ textarea:focus-visible {
   width: 2.5rem;
 }
 
+/* Core Values -- 4 cards spelling S-L-S-C (Strellas Labor Service
+   Cooperative's own initials). Distinct from .service-list on purpose:
+   this is a branding moment worth calling out visually rather than
+   reusing the plain services-list row style. */
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+}
+
+.value-card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+  text-align: center;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.value-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 32px rgba(11, 37, 69, 0.1);
+}
+
+.value-card .letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--ink), var(--sea));
+  color: var(--gold);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.7rem;
+  margin: 0 auto var(--space-sm);
+}
+
+.value-card p {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.values-note {
+  text-align: center;
+  margin-top: var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--gold-deep);
+}
+
 /* ---------------------------------------------------------------------------
    5c. GALLERY (populated dynamically from Google Sheets -- see js/sheet-data.js)
 --------------------------------------------------------------------------- */
@@ -1165,7 +1219,8 @@ textarea:focus-visible {
   }
 
   .people-grid,
-  .board-grid {
+  .board-grid,
+  .values-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
