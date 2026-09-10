@@ -528,17 +528,12 @@ textarea:focus-visible {
   width: 2.5rem;
 }
 
-<<<<<<< Updated upstream
-=======
-/* Services grid -- one .service-card per manpower category, with a
-   single --accent custom property per card (set by the color modifier
-   classes below) driving every colored element on that card: the top
-   border, the icon, and the feature-list dashes. Deliberately NOT the
-   generic "icon in a colored circle on a white card" pattern -- instead:
-   an oversized ghost numeral (01-06, echoing the numbered style already
-   used in the Organizational Structure section further down the page),
-   a bold color band along the top edge, and the icon drawn directly in
-   the category color rather than parked in a badge. */
+/* Services grid -- one .service-card per manpower category. Each card's
+   icon circle uses a distinct saturated color (green/orange/blue/purple/
+   teal/red) via a modifier class -- a deliberate, CONTAINED exception to
+   the site's usual restrained navy/gold palette, scoped only to these
+   icon badges, so the category color-coding from the reference flyers
+   comes through without the rest of the page turning multicolored. */
 .services-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -547,108 +542,79 @@ textarea:focus-visible {
 }
 
 .service-card {
-  position: relative;
-  overflow: hidden;
   background: var(--white);
   border: 1px solid var(--line);
-  border-top: 4px solid var(--accent, var(--gold));
   border-radius: var(--radius);
-  padding: var(--space-lg) var(--space-md) var(--space-md);
+  padding: var(--space-md);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .service-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 16px 34px rgba(11, 37, 69, 0.12);
-}
-
-/* EDIT HERE to change a category's color, or add a new modifier for a 7th
-   service card -- just add a matching ".service-card--yourcolor" class in
-   index.html and a rule here (one line, since every other colored element
-   on the card reads from this single --accent variable). */
-.service-card--green { --accent: #2f8a45; }
-.service-card--orange { --accent: #d15e21; }
-.service-card--blue { --accent: #2860ad; }
-.service-card--purple { --accent: #6d4390; }
-.service-card--teal { --accent: #1a6b64; }
-.service-card--red { --accent: #a02840; }
-
-.service-number {
-  position: absolute;
-  top: -0.4rem;
-  right: var(--space-sm);
-  font-family: var(--font-display);
-  font-size: 4.2rem;
-  font-weight: 700;
-  line-height: 1;
-  color: var(--paper-dim);
-  z-index: 0;
-  pointer-events: none;
-  user-select: none;
+  box-shadow: 0 16px 34px rgba(11, 37, 69, 0.1);
 }
 
 .service-icon {
-  position: relative;
-  z-index: 1;
   display: inline-flex;
-  color: var(--accent, var(--gold));
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  color: var(--white);
   margin-bottom: var(--space-sm);
 }
 
 .service-icon svg {
-  width: 34px;
-  height: 34px;
+  width: 26px;
+  height: 26px;
 }
 
+/* EDIT HERE to change a category's color, or add a new modifier for a 7th
+   service card -- just add a matching ".service-card--yourcolor" class in
+   index.html and a rule here. */
+.service-card--green .service-icon { background: #3a9d4f; }
+.service-card--orange .service-icon { background: #e0692a; }
+.service-card--blue .service-icon { background: #2e6fcf; }
+.service-card--purple .service-icon { background: #7b4fa0; }
+.service-card--teal .service-icon { background: #1f7a72; }
+.service-card--red .service-icon { background: #b5304a; }
+
 .service-card h3 {
-  position: relative;
-  z-index: 1;
-  font-family: var(--font-display);
-  font-size: 1.3rem;
+  font-size: 1.15rem;
   margin-bottom: 0.15rem;
 }
 
 .service-kicker {
-  position: relative;
-  z-index: 1;
   display: block;
   font-family: var(--font-mono);
   font-size: 0.68rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--accent, var(--gold-deep));
+  color: var(--gold-deep);
   margin-bottom: var(--space-sm);
 }
 
 .service-card p {
-  position: relative;
-  z-index: 1;
   font-size: 0.9rem;
   color: var(--muted);
   margin-bottom: var(--space-sm);
 }
 
 .service-features {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  gap: 0.3rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
 }
 
 .service-features span {
-  position: relative;
-  padding-left: 1.1rem;
-  font-size: 0.82rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  background: var(--paper-dim);
   color: var(--charcoal);
 }
-
-.service-features span::before {
-  content: "\2014";
-  position: absolute;
-  left: 0;
-  color: var(--accent, var(--gold));
-}
-
 /* "Why Choose Strellas" -- a simple icon + heading + description list,
    reusing the site's normal navy/gold palette (not the services grid's
    category colors), since this section is about trust/credibility rather
@@ -699,7 +665,10 @@ textarea:focus-visible {
   color: var(--muted);
 }
 
+<<<<<<< HEAD
 >>>>>>> Stashed changes
+=======
+>>>>>>> c4adf10647e577cc250844e87ab3aeeaa2990186
 /* Core Values -- 4 cards spelling S-L-S-C (Strellas Labor Service
    Cooperative's own initials). Distinct from .service-list on purpose:
    this is a branding moment worth calling out visually rather than
@@ -1420,6 +1389,10 @@ textarea:focus-visible {
     grid-template-columns: repeat(3, 1fr);
   }
 
+  .services-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .people-grid,
   .board-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -1499,7 +1472,8 @@ textarea:focus-visible {
 
   .people-grid,
   .board-grid,
-  .values-grid {
+  .values-grid,
+  .services-grid {
     grid-template-columns: 1fr;
   }
 
