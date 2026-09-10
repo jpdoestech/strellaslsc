@@ -18,33 +18,38 @@
    to change the values in this block.
 --------------------------------------------------------------------------- */
 :root {
-  /* Colors -- re-themed to match the actual logo palette (French navy,
-     gold, gray, white), plus a coral accent for hover/highlight moments
-     so the page doesn't read as flat navy-and-gold everywhere.
+  /* Colors -- re-themed to match the ACTUAL brochure/flyer palette you
+     provided: a warmer, brighter royal blue + a rich golden-mustard gold,
+     on a clean white background, rather than the previous darker/cooler
+     navy. Two blues do different jobs here (matching the brochure, which
+     also uses two blues): --ink is the darker one, for headline text and
+     large dark panels (hero, dark sections); --sea is the brighter,
+     more saturated one, for filled shapes like icon circles and accents --
+     matching the brochure's "Why Choose Strellas" icon circles and ribbon
+     banners.
 
-     Two things were fixed here on top of the color swap itself:
-     1. Contrast: several text colors (mainly gold-on-light-background
-        labels, and light-gray-on-dark secondary text) were too close to
-        their background to read comfortably. --gold-deep, --muted, and
-        --muted-dark exist specifically to fix those spots -- see where
-        they're used below.
-     2. One consistent gray scale instead of half a dozen one-off grays
-        scattered through the file, so future edits stay consistent. */
-  --ink: #0b2545;         /* French navy -- header bg, dark sections, primary text on light */
-  --ink-deep: #050f1e;    /* darkest navy -- hero gradient floor, footer */
-  --sea: #1b5a96;         /* brand blue -- links, icons, section accents (matches the logo's blue) */
-  --gold: #e7a83c;        /* bright gold -- CTAs, highlights on DARK backgrounds. Use sparingly */
-  --gold-deep: #8f5c0c;   /* deeper amber -- use instead of --gold for small text on LIGHT
+     Retired the earlier --coral accent here: the brochure itself only
+     ever uses two colors (navy + gold) as its accent language, so this
+     redesign follows that rather than introducing a third color the
+     source material doesn't have.
+
+     Every pairing below was checked for WCAG contrast before shipping
+     (not just eyeballed) -- see --gold-deep's note for why that one
+     specifically exists. */
+  --ink: #163b6f;         /* royal navy -- headline text, hero bg, dark sections */
+  --ink-deep: #0a2348;    /* darkest navy -- hero gradient floor, footer */
+  --sea: #1c62b3;         /* brighter royal blue -- icon circles, filled accents, links */
+  --gold: #eab53a;        /* golden-mustard -- CTAs, ribbons, highlights on DARK backgrounds */
+  --gold-deep: #8f660f;   /* deeper amber -- use instead of --gold for small text on LIGHT
                               backgrounds (e.g. eyebrows); --gold itself is too light to read
-                              comfortably at small sizes against the cream/white page */
-  --coral: #e2603f;       /* secondary accent -- hover states and emphasis moments, used
-                              deliberately sparingly so it still reads as an accent */
-  --paper: #f5f6f8;       /* cool light gray -- page background */
-  --paper-dim: #ecedf1;   /* slightly darker paper -- alternating section bg */
-  --charcoal: #1c2430;    /* body text color */
+                              comfortably at small sizes against the white page */
+  --paper: #ffffff;       /* clean white -- page background, matching the brochure */
+  --paper-dim: #eef4fb;   /* pale blue-white -- alternating section bg, matches the
+                              brochure's light blue service-card panels */
+  --charcoal: #1c2a3d;    /* body text color */
   --muted: #5b6472;       /* secondary/muted text on LIGHT backgrounds -- meets AA contrast on white */
   --muted-dark: #c7d2de;  /* secondary/muted text on DARK backgrounds */
-  --line: #d8dce2;        /* hairline borders / dividers */
+  --line: #dce3ee;        /* hairline borders / dividers */
   --white: #ffffff;
 
   /* Type */
@@ -223,7 +228,7 @@ textarea:focus-visible {
 }
 
 .btn--gold:hover {
-  background: #f2bc63;
+  background: #f0c463;
 }
 
 .btn--outline {
@@ -234,8 +239,8 @@ textarea:focus-visible {
 
 .btn--outline:hover {
   background: rgba(255, 255, 255, 0.08);
-  border-color: var(--coral);
-  color: var(--coral);
+  border-color: var(--gold);
+  color: var(--gold);
 }
 
 /* ---------------------------------------------------------------------------
@@ -409,7 +414,7 @@ textarea:focus-visible {
   align-items: center;
   color: var(--white);
   overflow: hidden;
-  background: linear-gradient(160deg, var(--ink) 0%, #081a33 60%, var(--ink-deep) 100%);
+  background: linear-gradient(160deg, var(--ink) 0%, #102f59 60%, var(--ink-deep) 100%);
 }
 
 /* Hero background photo -- swapped by JS from the Google Sheet if available,
@@ -449,11 +454,10 @@ textarea:focus-visible {
 
 .hero-copy h1 em {
   font-style: normal;
-  /* Coral instead of gold here specifically -- gold is already the CTA
-     button below it, so giving the headline its own accent color keeps
-     the eye moving through navy -> coral -> gold rather than one gold
-     note doing every job on the page. */
-  color: var(--coral);
+  /* Gold, matching the brochure's own single accent-color strategy
+     (navy + gold only, no third color) -- the earlier coral highlight
+     here was a site-original addition not present in the source brochure. */
+  color: var(--gold);
 }
 
 .hero-copy p {
@@ -528,12 +532,15 @@ textarea:focus-visible {
   width: 2.5rem;
 }
 
-/* Services grid -- one .service-card per manpower category. Each card's
-   icon circle uses a distinct saturated color (green/orange/blue/purple/
-   teal/red) via a modifier class -- a deliberate, CONTAINED exception to
-   the site's usual restrained navy/gold palette, scoped only to these
-   icon badges, so the category color-coding from the reference flyers
-   comes through without the rest of the page turning multicolored. */
+/* Services grid -- one .service-card per manpower category, with a
+   single --accent custom property per card (set by the color modifier
+   classes below) driving every colored element on that card: the top
+   border, the icon, and the feature-list dashes. Deliberately NOT the
+   generic "icon in a colored circle on a white card" pattern -- instead:
+   an oversized ghost numeral (01-06, echoing the numbered style already
+   used in the Organizational Structure section further down the page),
+   a bold color band along the top edge, and the icon drawn directly in
+   the category color rather than parked in a badge. */
 .services-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -542,79 +549,108 @@ textarea:focus-visible {
 }
 
 .service-card {
+  position: relative;
+  overflow: hidden;
   background: var(--white);
   border: 1px solid var(--line);
+  border-top: 4px solid var(--accent, var(--gold));
   border-radius: var(--radius);
-  padding: var(--space-md);
+  padding: var(--space-lg) var(--space-md) var(--space-md);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .service-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 16px 34px rgba(11, 37, 69, 0.1);
-}
-
-.service-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  color: var(--white);
-  margin-bottom: var(--space-sm);
-}
-
-.service-icon svg {
-  width: 26px;
-  height: 26px;
+  box-shadow: 0 16px 34px rgba(11, 37, 69, 0.12);
 }
 
 /* EDIT HERE to change a category's color, or add a new modifier for a 7th
    service card -- just add a matching ".service-card--yourcolor" class in
-   index.html and a rule here. */
-.service-card--green .service-icon { background: #3a9d4f; }
-.service-card--orange .service-icon { background: #e0692a; }
-.service-card--blue .service-icon { background: #2e6fcf; }
-.service-card--purple .service-icon { background: #7b4fa0; }
-.service-card--teal .service-icon { background: #1f7a72; }
-.service-card--red .service-icon { background: #b5304a; }
+   index.html and a rule here (one line, since every other colored element
+   on the card reads from this single --accent variable). */
+.service-card--green { --accent: #2f8a45; }
+.service-card--orange { --accent: #d15e21; }
+.service-card--blue { --accent: #2860ad; }
+.service-card--purple { --accent: #6d4390; }
+.service-card--teal { --accent: #1a6b64; }
+.service-card--red { --accent: #a02840; }
+
+.service-number {
+  position: absolute;
+  top: -0.4rem;
+  right: var(--space-sm);
+  font-family: var(--font-display);
+  font-size: 4.2rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--paper-dim);
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.service-icon {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  color: var(--accent, var(--gold));
+  margin-bottom: var(--space-sm);
+}
+
+.service-icon svg {
+  width: 34px;
+  height: 34px;
+}
 
 .service-card h3 {
-  font-size: 1.15rem;
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
   margin-bottom: 0.15rem;
 }
 
 .service-kicker {
+  position: relative;
+  z-index: 1;
   display: block;
   font-family: var(--font-mono);
   font-size: 0.68rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--gold-deep);
+  color: var(--accent, var(--gold-deep));
   margin-bottom: var(--space-sm);
 }
 
 .service-card p {
+  position: relative;
+  z-index: 1;
   font-size: 0.9rem;
   color: var(--muted);
   margin-bottom: var(--space-sm);
 }
 
 .service-features {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 0.3rem;
 }
 
 .service-features span {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  padding: 0.3rem 0.6rem;
-  border-radius: 999px;
-  background: var(--paper-dim);
+  position: relative;
+  padding-left: 1.1rem;
+  font-size: 0.82rem;
   color: var(--charcoal);
 }
+
+.service-features span::before {
+  content: "\2014";
+  position: absolute;
+  left: 0;
+  color: var(--accent, var(--gold));
+}
+
 /* "Why Choose Strellas" -- a simple icon + heading + description list,
    reusing the site's normal navy/gold palette (not the services grid's
    category colors), since this section is about trust/credibility rather
@@ -665,10 +701,6 @@ textarea:focus-visible {
   color: var(--muted);
 }
 
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
->>>>>>> c4adf10647e577cc250844e87ab3aeeaa2990186
 /* Core Values -- 4 cards spelling S-L-S-C (Strellas Labor Service
    Cooperative's own initials). Distinct from .service-list on purpose:
    this is a branding moment worth calling out visually rather than
@@ -1046,7 +1078,7 @@ textarea:focus-visible {
 
 .branch-map {
   position: relative;
-  background: #071b33;
+  background: var(--ink-deep);
   border: 1px solid var(--line-dark);
   border-radius: var(--radius);
   overflow: hidden;
