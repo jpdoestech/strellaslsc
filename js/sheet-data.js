@@ -713,7 +713,7 @@ async function initBranchMap() {
    ============================================================================ */
 const ACTIVITIES_CONFIG = {
   // ---- EDIT HERE ---------------------------------------------------------
-  ACTIVITIES_CSV_URL: "",
+  ACTIVITIES_CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRl7fxMLEsaRC9ezFMQZLtUawwAvqeavR4XZcglZQUzCR0fP_qd4QX-25sCjVgbTkeqkGjwmwLIn0zO/pub?gid=1728856811&single=true&output=csv",
   CACHE_MINUTES: 10,
   // -------------------------------------------------------------------------
 };
