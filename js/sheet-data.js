@@ -310,39 +310,30 @@ function groupRowsByOrder(rows) {
  *  per row. Cards with more than one photo get a "1/N" badge, cycle
  *  through their photos automatically on hover, and open as a swipeable
  *  carousel in the lightbox (see js/main.js) when clicked. */
-function renderGrid(container, rows, cacheVersion) {
-  if (!rows.length) {
-    container.innerHTML = '<p class="gallery-empty">Loading images....</p>';
-    /**container.innerHTML = '<p class="gallery-empty">No images yet -- add rows to the Google Sheet with this category to fill this section.</p>'; */
-    return;
-  }
+/** Builds the HTML for one photo-group <figure> -- used for both the main
+ *  gallery/branch grids and (see below) activity cards, so both get
+ *  identical behavior: a "1/N" badge when there's more than one photo,
+ *  a caption overlay, and the data-images blob that js/main.js reads on
+ *  click to open the lightbox (as a swipeable carousel when N > 1). */
+function buildPhotoFigureHtml(images, fallbackAlt) {
+  const first = images[0];
+  const badge = images.length > 1 ? `<span class="photo-count">1/${images.length}</span>` : "";
+  // The full photo list travels with the card as a URL-encoded JSON blob
+  // in data-images -- encodeURIComponent handles quotes/special characters
+  // safely inside the HTML attribute with no extra escaping needed.
+  const dataImages = encodeURIComponent(JSON.stringify(images));
+  return `<figure data-images="${dataImages}" data-index="0">
+    <img src="${escapeHtml(first.src)}" alt="${escapeHtml(first.caption || fallbackAlt || "SLSC")}" loading="lazy">
+    ${badge}
+    <figcaption>${escapeHtml(first.caption)}</figcaption>
+  </figure>`;
+}
 
-  const groups = groupRowsByOrder(rows);
-
-  container.innerHTML = groups
-    .map((group) => {
-      const images = group.items.map((row) => ({
-        src: withCacheBust(row.image_url, cacheVersion),
-        caption: row.caption || row.title || "",
-      }));
-      const first = images[0];
-      const badge = images.length > 1 ? `<span class="photo-count">1/${images.length}</span>` : "";
-      // The full photo list travels with the card as a URL-encoded JSON
-      // blob in data-images -- encodeURIComponent handles quotes/special
-      // characters safely inside the HTML attribute with no extra
-      // escaping needed. js/main.js reads this back out on click.
-      const dataImages = encodeURIComponent(JSON.stringify(images));
-      return `<figure data-images="${dataImages}" data-index="0">
-        <img src="${escapeHtml(first.src)}" alt="${escapeHtml(first.caption || "SLSC")}" loading="lazy">
-        ${badge}
-        <figcaption>${escapeHtml(first.caption)}</figcaption>
-      </figure>`;
-    })
-    .join("");
-
-  // Hover-to-preview: for any card with more than one photo, cycle through
-  // them automatically every 1.2s while the pointer stays over the card,
-  // and reset back to the first photo on mouse-out.
+/** Hover-to-preview: for any figure[data-images] inside `container` that
+ *  has more than one photo, cycle through them automatically every 1.2s
+ *  while the pointer stays over it, resetting back to the first photo on
+ *  mouse-out. Shared by the main gallery/branch grids and activity cards. */
+function wireHoverCycle(container) {
   container.querySelectorAll("figure[data-images]").forEach((figure) => {
     let images;
     try {
@@ -377,6 +368,28 @@ function renderGrid(container, rows, cacheVersion) {
       showAt(0);
     });
   });
+}
+
+function renderGrid(container, rows, cacheVersion) {
+  if (!rows.length) {
+    container.innerHTML = '<p class="gallery-empty">Loading images....</p>';
+    /**container.innerHTML = '<p class="gallery-empty">No images yet -- add rows to the Google Sheet with this category to fill this section.</p>'; */
+    return;
+  }
+
+  const groups = groupRowsByOrder(rows);
+
+  container.innerHTML = groups
+    .map((group) => {
+      const images = group.items.map((row) => ({
+        src: withCacheBust(row.image_url, cacheVersion),
+        caption: row.caption || row.title || "",
+      }));
+      return buildPhotoFigureHtml(images);
+    })
+    .join("");
+
+  wireHoverCycle(container);
 
   setupViewMore(container);
 }
@@ -686,18 +699,36 @@ async function initBranchMap() {
 
       - date      : free text, shown as a small label on the card, e.g.
                     "March 2026" or "March 15, 2026" -- no particular
-                    format required, it's just displayed as-is.
-      - title     : the headline of the post
-      - blurb     : one to three sentences describing it
+                    format required, it's just displayed as-is. Only used
+                    from the FIRST row of a multi-photo activity (see
+                    "order" below) -- leave it blank on the extra photo
+                    rows.
+      - title     : the headline of the post. Same as "date" -- only the
+                    first row of a multi-photo activity needs this filled
+                    in; it's what the card shows as its heading.
+      - blurb     : for the first row of an activity, this is the card's
+                    description (one to three sentences). For an extra
+                    photo row (see "order" below), it instead becomes
+                    THAT specific photo's caption when a visitor opens it
+                    in the lightbox -- optional either way.
       - image_url : OPTIONAL. Leave blank for a text-only card, or use a
                     Google Drive share link the same way the image sheet
                     describes (https://lh3.googleusercontent.com/d/FILE_ID)
-      - order     : a number controlling display order (1 = shown first).
-                    There's no automatic sorting by the "date" text itself
-                    (it's free text, not a real date), so this is how you
-                    control which shows up first -- keep your most recent
-                    post at order 1 and shift the rest down whenever you
-                    add a new one.
+      - order     : a number controlling display order AND letting one
+                    activity have several photos, using the exact same
+                    convention as the main photo gallery: rows sharing the
+                    same WHOLE number all become ONE activity card that
+                    visitors can click through --
+                      1, 1.1, 1.2   -> one activity, 3 photos
+                      2             -> a separate activity, 1 photo (or 0,
+                                       if you leave image_url blank)
+                    The card with the lowest order shows first. For the
+                    "1.1"/"1.2" extra-photo rows, only image_url (and
+                    optionally blurb, as a caption) are needed -- leave
+                    date/title blank on those, they're not used.
+                    A card with more than one photo gets the same "1/3"
+                    badge, hover-to-preview cycling, and swipeable
+                    lightbox as the main gallery.
 
    2. File > Share > Publish to web, choose that specific tab, format
       "Comma-separated values (.csv)", Publish, copy the URL.
@@ -719,32 +750,51 @@ const ACTIVITIES_CONFIG = {
 };
 
 /** Renders the activities feed and un-hides the section (only if there's
- *  at least one row -- see the big comment above ACTIVITIES_CONFIG). */
+ *  at least one activity -- see the big comment above ACTIVITIES_CONFIG).
+ *
+ *  Multiple photos per activity work exactly like the main photo gallery:
+ *  rows sharing the same WHOLE number in "order" become ONE activity card
+ *  with several photos (e.g. order 1, 1.1, 1.2 -> one card, 3 photos),
+ *  with the same "1/3" badge, hover-to-preview cycling, and swipeable
+ *  lightbox as the gallery -- see buildPhotoFigureHtml/wireHoverCycle
+ *  above. Only the FIRST row in a group (lowest order) supplies the
+ *  card's date/title/blurb text; every row in the group can have its own
+ *  image_url, and its own "blurb" is used as that specific photo's
+ *  caption in the lightbox if present (falling back to the activity's
+ *  title otherwise). */
 function renderActivities(rows, cacheVersion) {
   const section = document.getElementById("activities");
   const grid = document.getElementById("activities-grid");
   if (!section || !grid) return;
 
-  const activities = sortByOrder(rows).filter((row) => row.title);
-  if (!activities.length) return; // section stays hidden -- nothing to show yet
+  const groups = groupRowsByOrder(rows).filter((group) => group.items[0].title);
+  if (!groups.length) return; // section stays hidden -- nothing to show yet
 
-  grid.innerHTML = activities
-    .map((row) => {
-      const photo = row.image_url
-        ? `<figure><img src="${escapeHtml(withCacheBust(row.image_url, cacheVersion))}" alt="${escapeHtml(row.title)}" loading="lazy"></figure>`
-        : "";
-      const date = row.date ? `<span class="activity-date">${escapeHtml(row.date)}</span>` : "";
-      const blurb = row.blurb ? `<p>${escapeHtml(row.blurb)}</p>` : "";
+  grid.innerHTML = groups
+    .map((group) => {
+      const main = group.items[0]; // date/title/blurb come from this row only
+      const images = group.items
+        .filter((row) => row.image_url)
+        .map((row) => ({
+          src: withCacheBust(row.image_url, cacheVersion),
+          caption: row.blurb || main.title || "",
+        }));
+
+      const photo = images.length ? buildPhotoFigureHtml(images, main.title) : "";
+      const date = main.date ? `<span class="activity-date">${escapeHtml(main.date)}</span>` : "";
+      const blurb = main.blurb ? `<p>${escapeHtml(main.blurb)}</p>` : "";
       return `<article class="activity-card">
         ${photo}
         <div class="activity-body">
           ${date}
-          <h3>${escapeHtml(row.title)}</h3>
+          <h3>${escapeHtml(main.title)}</h3>
           ${blurb}
         </div>
       </article>`;
     })
     .join("");
+
+  wireHoverCycle(grid);
 
   section.hidden = false;
 }

@@ -790,7 +790,9 @@ textarea:focus-visible {
 --------------------------------------------------------------------------- */
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  /* 3 columns, not 4 -- fewer, larger tiles per row so each photo shows
+     bigger (matches the same choice already made for .activities-grid). */
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--space-sm);
 }
 
@@ -1266,7 +1268,8 @@ textarea:focus-visible {
 .branch-photos {
   margin-top: var(--space-lg);
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  /* 3 columns, not 4 -- same reasoning as .gallery-grid above. */
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--space-sm);
 }
 

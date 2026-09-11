@@ -201,9 +201,9 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     // Delegated click listener -- catches clicks on any current OR future
-    // image inside these two grids.
+    // image inside these three grids.
     document.addEventListener("click", (e) => {
-      const img = e.target.closest(".gallery-grid img, .branch-photos img");
+      const img = e.target.closest(".gallery-grid img, .branch-photos img, .activities-grid img");
       if (!img) return;
       const figure = img.closest("figure");
       if (!figure) return;
