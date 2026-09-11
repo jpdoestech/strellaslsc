@@ -486,18 +486,21 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
-/** Fetches and caches a published sheet CSV at any URL, returning row objects.
- *  Generic version of the image-sheet fetcher above, reused for the branch
- *  sheet too (different URL, different cache key) so both can be published
- *  as separate tabs with separate "Publish to web" links. */
+/** Fetches and caches a published sheet CSV at any URL, returning
+ *  { rows, fetchedAt }. Generic version of the image-sheet fetcher above,
+ *  reused for the branch sheet and the activities sheet too (different
+ *  URL, different cache key each) so any of them can be published as
+ *  separate tabs with separate "Publish to web" links. fetchedAt is
+ *  reused as an automatic cache-busting value for any image URLs in the
+ *  rows -- see withCacheBust. */
 async function loadCsvRows(csvUrl, cacheKey, cacheMinutes) {
-  if (!csvUrl) return [];
+  if (!csvUrl) return { rows: [], fetchedAt: null };
 
   if (cacheMinutes > 0) {
     try {
       const cached = JSON.parse(localStorage.getItem(cacheKey) || "null");
       if (cached && Date.now() - cached.fetchedAt < cacheMinutes * 60 * 1000) {
-        return cached.rows;
+        return { rows: cached.rows, fetchedAt: cached.fetchedAt };
       }
     } catch (e) {
       /* corrupt cache entry -- ignore and re-fetch */
@@ -510,15 +513,16 @@ async function loadCsvRows(csvUrl, cacheKey, cacheMinutes) {
   }
   const text = await response.text();
   const rows = rowsToObjects(parseCsv(text));
+  const fetchedAt = Date.now();
 
   if (cacheMinutes > 0) {
     try {
-      localStorage.setItem(cacheKey, JSON.stringify({ fetchedAt: Date.now(), rows }));
+      localStorage.setItem(cacheKey, JSON.stringify({ fetchedAt, rows }));
     } catch (e) {
       /* storage full or unavailable -- non-fatal, just skip caching */
     }
   }
-  return rows;
+  return { rows, fetchedAt };
 }
 
 /**
@@ -656,11 +660,106 @@ async function initBranchMap() {
   if (!BRANCHES_CSV_URL) return; // static fallback list + placeholder message stay as-is
 
   try {
-    const rows = await loadCsvRows(BRANCHES_CSV_URL, "slsc_branches_cache_v1", CACHE_MINUTES);
+    const { rows } = await loadCsvRows(BRANCHES_CSV_URL, "slsc_branches_cache_v1", CACHE_MINUTES);
     renderBranches(rows);
   } catch (err) {
     console.error("[slsc] Failed to load branches from Google Sheets:", err);
     // Fail quietly on the page -- static fallback list stays visible.
+  }
+}
+
+/* ============================================================================
+   RECENT ACTIVITIES (separate Google Sheet tab from the image database)
+   ----------------------------------------------------------------------------
+   Powers the "Recent Activities" section -- a simple, dated feed of posts
+   (a training seminar, a community event, a new client, etc.) so the site
+   shows visible proof that the Cooperative is active, not just a static
+   page. Same no-API-key approach as the image sheet and the branches
+   sheet: publish a tab as CSV, paste the link below.
+
+   HOW TO SET UP THE "activities" SHEET TAB
+   ---------------------------------------------------------------------------
+   1. In the same Google Sheet (or a different one), add a new tab with
+      these EXACT column headers in row 1:
+
+        date | title | blurb | image_url | order
+
+      - date      : free text, shown as a small label on the card, e.g.
+                    "March 2026" or "March 15, 2026" -- no particular
+                    format required, it's just displayed as-is.
+      - title     : the headline of the post
+      - blurb     : one to three sentences describing it
+      - image_url : OPTIONAL. Leave blank for a text-only card, or use a
+                    Google Drive share link the same way the image sheet
+                    describes (https://lh3.googleusercontent.com/d/FILE_ID)
+      - order     : a number controlling display order (1 = shown first).
+                    There's no automatic sorting by the "date" text itself
+                    (it's free text, not a real date), so this is how you
+                    control which shows up first -- keep your most recent
+                    post at order 1 and shift the rest down whenever you
+                    add a new one.
+
+   2. File > Share > Publish to web, choose that specific tab, format
+      "Comma-separated values (.csv)", Publish, copy the URL.
+
+   3. Paste it into ACTIVITIES_CONFIG.ACTIVITIES_CSV_URL below.
+
+   IMPORTANT: the "Recent Activities" section is HIDDEN by default (see
+   the "hidden" attribute on its <section> in index.html) and only
+   appears once there's at least one row here -- so a real visitor never
+   sees an awkward "no activities yet" placeholder. It's safe to leave
+   this unset indefinitely; the section just won't show up until you add
+   your first post.
+   ============================================================================ */
+const ACTIVITIES_CONFIG = {
+  // ---- EDIT HERE ---------------------------------------------------------
+  ACTIVITIES_CSV_URL: "",
+  CACHE_MINUTES: 10,
+  // -------------------------------------------------------------------------
+};
+
+/** Renders the activities feed and un-hides the section (only if there's
+ *  at least one row -- see the big comment above ACTIVITIES_CONFIG). */
+function renderActivities(rows, cacheVersion) {
+  const section = document.getElementById("activities");
+  const grid = document.getElementById("activities-grid");
+  if (!section || !grid) return;
+
+  const activities = sortByOrder(rows).filter((row) => row.title);
+  if (!activities.length) return; // section stays hidden -- nothing to show yet
+
+  grid.innerHTML = activities
+    .map((row) => {
+      const photo = row.image_url
+        ? `<figure><img src="${escapeHtml(withCacheBust(row.image_url, cacheVersion))}" alt="${escapeHtml(row.title)}" loading="lazy"></figure>`
+        : "";
+      const date = row.date ? `<span class="activity-date">${escapeHtml(row.date)}</span>` : "";
+      const blurb = row.blurb ? `<p>${escapeHtml(row.blurb)}</p>` : "";
+      return `<article class="activity-card">
+        ${photo}
+        <div class="activity-body">
+          ${date}
+          <h3>${escapeHtml(row.title)}</h3>
+          ${blurb}
+        </div>
+      </article>`;
+    })
+    .join("");
+
+  section.hidden = false;
+}
+
+/** Fetches the activities sheet (if configured) and renders it. */
+async function initActivities() {
+  const { ACTIVITIES_CSV_URL, CACHE_MINUTES } = ACTIVITIES_CONFIG;
+  if (!ACTIVITIES_CSV_URL) return; // section stays hidden -- nothing configured yet
+
+  try {
+    const { rows, fetchedAt } = await loadCsvRows(ACTIVITIES_CSV_URL, "slsc_activities_cache_v1", CACHE_MINUTES);
+    renderActivities(rows, fetchedAt);
+  } catch (err) {
+    console.error("[slsc] Failed to load activities from Google Sheets:", err);
+    // Fail quietly -- section just stays hidden, same as "not configured yet".
   }
 }
 
@@ -708,4 +807,5 @@ async function initSheetImages() {
 document.addEventListener("DOMContentLoaded", () => {
   initSheetImages();
   initBranchMap();
+  initActivities();
 });

@@ -836,6 +836,69 @@ textarea:focus-visible {
   background: rgba(255, 255, 255, 0.14);
 }
 
+/* ---------------------------------------------------------------------------
+   RECENT ACTIVITIES -- see the big setup comment above ACTIVITIES_CONFIG in
+   js/sheet-data.js. Cards are simple: optional photo, small date label,
+   title, short blurb. A card with no image_url just skips the <figure>
+   entirely rather than showing an empty gray box.
+--------------------------------------------------------------------------- */
+.activities-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+}
+
+.activity-card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.activity-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 32px rgba(11, 37, 69, 0.1);
+}
+
+.activity-card figure {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--paper-dim);
+}
+
+.activity-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.activity-body {
+  padding: var(--space-md);
+}
+
+.activity-date {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin-bottom: 0.3rem;
+}
+
+.activity-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  margin-bottom: 0.3rem;
+}
+
+.activity-card p {
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
 .gallery-grid figure {
   position: relative;
   aspect-ratio: 4 / 3;
@@ -1425,6 +1488,10 @@ textarea:focus-visible {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .activities-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .people-grid,
   .board-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -1505,7 +1572,8 @@ textarea:focus-visible {
   .people-grid,
   .board-grid,
   .values-grid,
-  .services-grid {
+  .services-grid,
+  .activities-grid {
     grid-template-columns: 1fr;
   }
 
