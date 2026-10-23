@@ -1347,18 +1347,18 @@ textarea:focus-visible {
 .philosophy-item .num {
   font-family: var(--font-mono);
   font-size: 2.6rem;
-  color: var(--gold);
+  color: var(--gold-deep);
   line-height: 1;
 }
 
 .philosophy-item h3 {
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
-  color: var(--white);
+  color: var(--ink);
 }
 
 .philosophy-item p {
-  color: var(--muted-dark);
+  color: var(--muted);
 }
 
 /* ---------------------------------------------------------------------------
