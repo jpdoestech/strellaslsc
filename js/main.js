@@ -18,24 +18,78 @@ document.addEventListener("DOMContentLoaded", () => {
   const navLinks = document.querySelector(".nav-links");
 
   if (toggle && navLinks) {
-    toggle.addEventListener("click", () => {
-      const isOpen = navLinks.classList.toggle("is-open");
-      toggle.classList.toggle("is-open", isOpen);
-      toggle.setAttribute("aria-expanded", String(isOpen));
-      // Lock background scroll while the full-screen mobile menu is open,
-      // so the page underneath doesn't shift/scroll behind it.
-      document.body.style.overflow = isOpen ? "hidden" : "";
-    });
-
-    // Close the mobile menu after tapping a link
+    const mobileMenu = window.matchMedia("(max-width: 1000px)");
+    const setMenuOpen = (open) => {
+      navLinks.classList.toggle("is-open", open);
+      toggle.classList.toggle("is-open", open);
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      navLinks.inert = mobileMenu.matches && !open;
+      document.body.style.overflow = open ? "hidden" : "";
+    };
+    toggle.addEventListener("click", () => setMenuOpen(!navLinks.classList.contains("is-open")));
     navLinks.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", () => {
-        navLinks.classList.remove("is-open");
-        document.body.style.overflow = "";
-        toggle.classList.remove("is-open");
-        toggle.setAttribute("aria-expanded", "false");
-      });
+      link.addEventListener("click", () => setMenuOpen(false));
     });
+    mobileMenu.addEventListener("change", () => setMenuOpen(false));
+    setMenuOpen(false);
+    document.addEventListener("keydown", (event) => {
+      if (!navLinks.classList.contains("is-open")) return;
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+        toggle.focus();
+      }
+      if (event.key === "Tab") {
+        const links = [...navLinks.querySelectorAll("a")].filter((link) => !link.closest("[hidden]"));
+        const first = links[0];
+        const last = toggle;
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    });
+  }
+
+  // Preserve deep links into the compact cooperative information panels.
+  const openLinkedPanel = () => {
+    const target = document.getElementById(window.location.hash.slice(1));
+    const panel = target?.closest("details");
+    if (panel) {
+      panel.open = true;
+      target.scrollIntoView({ block: "start" });
+    }
+  };
+  window.addEventListener("hashchange", openLinkedPanel);
+  document.querySelectorAll('a[href^="#"]').forEach((link) => {
+    link.addEventListener("click", () => {
+      const target = document.getElementById(link.hash.slice(1));
+      const panel = target?.closest("details");
+      if (panel) panel.open = true;
+    });
+  });
+  openLinkedPanel();
+
+  document.querySelectorAll("[data-inquiry]").forEach((link) => {
+    link.addEventListener("click", () => {
+      const subject = document.getElementById("subject");
+      if (subject) subject.value = link.dataset.inquiry;
+    });
+  });
+
+  // Content stays visible if JavaScript or motion support is unavailable.
+  if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const reveals = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("reveal-in");
+        reveals.unobserve(entry.target);
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".section-head, .service-card, .process-grid li, .opportunities-layout").forEach((element) => reveals.observe(element));
   }
 
   /* ------------------- Highlight nav link for visible section ------------ */

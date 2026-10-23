@@ -99,19 +99,17 @@
      refresh. Bump this number (v=3, v=4, ...) any time style.css changes
      and you want to guarantee everyone gets the fresh version immediately,
      instead of whatever was previously cached. -->
-<link rel="stylesheet" href="css/style.css?v=2">
+<link rel="stylesheet" href="css/style.css?v=3">
 </head>
 <body>
+<a class="skip-link" href="#top">Skip to content</a>
 
 <!-- =========================== TOP UTILITY BAR =========================== -->
 <!-- EDIT HERE: address / phone / email / social links -->
 <div class="topbar">
   <div class="wrap">
-    <span>2nd Flr., Room 214, H&amp;C Building, Alvarez Street (Pob.), Brgy. 27-C, Davao City, Philippines &nbsp;|&nbsp; (082) 222-3660 &nbsp;|&nbsp; strellas_davaomain@outlook.com</span>
-    <span>
-      <a href="https://www.facebook.com/strellaslaborservicecooperative" aria-label="Facebook">Facebook</a> &nbsp;
-      <a href="#" aria-label="Instagram">Instagram</a>
-    </span>
+    <span>Davao City &middot; Serving Mindanao &amp; the Visayas</span>
+    <span class="topbar-links"><a href="tel:+63822223660">(082) 222-3660</a><a href="https://www.facebook.com/strellaslaborservicecooperative">Facebook &nearr;</a></span>
   </div>
 </div>
 
@@ -130,89 +128,69 @@
     </a>
 
     <nav aria-label="Primary">
-      <ul class="nav-links">
+      <ul class="nav-links" id="primary-links">
         <li><a href="#about">About</a></li>
         <li><a href="#services">Services</a></li>
-        <li><a href="#foundation">Vision &amp; Core Values</a></li>
-        <li><a href="#membership">Membership</a></li>
+        <li id="clients-nav" hidden><a href="#clients">Clients</a></li>
         <li><a href="#branches">Branches</a></li>
-        <li><a href="#board">Officers</a></li>
         <li><a href="#contact">Contact</a></li>
+        <li><a class="nav-cta" href="#opportunities">Employment inquiries <span aria-hidden="true">&nearr;</span></a></li>
       </ul>
     </nav>
 
-    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="primary-links">
       <span></span>
     </button>
   </div>
 </header>
 
-<main id="top">
+<main id="top" tabindex="-1">
 
   <!-- =============================== HERO ================================ -->
-  <section class="hero">
-    <!-- Filled from your Google Sheet (category = "hero"); falls back to the
-         CSS gradient in style.css if the sheet has no hero row yet. -->
-    <div class="hero-photo" id="hero-photo-target"></div>
-
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-photo" id="hero-photo-target" aria-hidden="true"></div>
     <div class="wrap">
       <div class="hero-copy">
-        <span class="eyebrow">Labor Service Cooperative &middot; Mindanao &amp; Visayas</span>
-        <!-- EDIT HERE: headline / intro copy -->
-        <h1>A law-abiding, reliable <em>labor service</em> partner.</h1>
-        <p>Registered with the Cooperative Development Authority in November 2008, Strellas Labor Service Cooperative supplies labor service and continuous employment opportunities to its member-employees across Mindanao and the Visayas.</p>
+        <span class="eyebrow"><span class="status-dot" aria-hidden="true"></span> People at the heart of progress</span>
+        <h1 id="hero-title">Reliable people.<br><em>Stronger</em><br>operations.</h1>
+        <p>Manpower services for businesses across Mindanao and the Visayas. Meaningful work and sustainable opportunities for our member-employees.</p>
         <div class="hero-actions">
-          <a href="#contact" class="btn btn--gold">Get in touch</a>
-          <a href="#services" class="btn btn--outline">See our services</a>
+          <a href="#contact" class="btn btn--gold" data-inquiry="Manpower request">Request manpower <span aria-hidden="true">&nearr;</span></a>
+          <a href="#opportunities" class="btn btn--outline">Looking for work?</a>
         </div>
+        <p class="hero-note">CDA-registered cooperative &middot; Established in 2008</p>
       </div>
-
-      <div class="hero-stats">
-        <div class="hero-stat">
-          <span class="num">2008</span>
-          <span class="label">Registered with the CDA</span>
-        </div>
-        <div class="hero-stat">
-          <span class="num">24</span>
-          <span class="label">Founding members</span>
-        </div>
-        <div class="hero-stat">
-          <span class="num">7</span>
-          <span class="label">Branch offices, Head Office in Davao</span>
-        </div>
-      </div>
+      <figure class="hero-visual">
+        <img src="https://lh3.googleusercontent.com/d/1ovrGp5TNMwh4vEoj2cX7fF7nINrNibXp" alt="Strellas Davao team together in their cooperative uniforms" width="720" height="680" fetchpriority="high">
+        <figcaption><span class="eyebrow">The people behind the service</span><strong>One cooperative.<br>A shared commitment.</strong><span>Davao team &middot; Strellas LSC</span></figcaption>
+        <span class="hero-seal" aria-hidden="true">People.<br>Purpose.<br>Progress.</span>
+      </figure>
     </div>
   </section>
 
-  <!-- =============================== ABOUT ================================ -->
-  <section class="section" id="about">
-    <div class="wrap about-grid">
-      <div>
-        <span class="eyebrow">Cooperative Profile</span>
-        <h2>Built by 24 founding members, run by three retired HR practitioners</h2>
-      </div>
-      <!-- EDIT HERE: company description -->
-      <div class="about-copy">
-        <p>Strellas was organized by a group of twenty-four (24) professionals and residents of Davao City, and registered with the Cooperative Development Authority (CDA) in November 2008, then re-registered on December 28, 2009.</p>
-        <p>Its earliest operation started on March 16, 2009 in Cagayan de Oro, on banana farm operations in Talakag, Baungon, and Libona.</p>
-        <p>Management of the Cooperative sits with three (3) HR practitioners, now retired from their respective organizations and fully engaged with the Cooperative, while other cooperators assist with management, recruitment, and marketing.</p>
-        <p>On January 28, 2020, the CDA granted a Certificate of Registration of Amendment changing the Cooperative's name from <strong>Strellas Multi-Purpose Cooperative</strong> to <strong>Strellas Labor Service Cooperative</strong>.</p>
-      </div>
+  <div class="trust-strip">
+    <div class="wrap">
+      <div><strong>Since 2008</strong><span>Registered with the CDA</span></div>
+      <div><strong>6 service areas</strong><span>Support across industries</span></div>
+      <div><strong>Mindanao &amp; Visayas</strong><span>Local teams. Regional reach.</span></div>
+      <a href="#about">Get to know Strellas <span aria-hidden="true">&searr;</span></a>
+    </div>
+  </div>
+
+  <!-- Approved client logos only. Add category=client rows to the existing image sheet. -->
+  <section class="section clients-section" id="clients" hidden aria-labelledby="clients-title">
+    <div class="wrap">
+      <div class="section-head"><span class="eyebrow">Working together</span><h2 id="clients-title">Our clients &amp; partners</h2><p>Relationships built on people, service, and shared progress.</p></div>
+      <ul class="client-grid" id="client-logos" aria-label="Client and partner logos"></ul>
     </div>
   </section>
 
-  <!-- =============================== SERVICES ================================ -->
-  <!-- EDIT HERE: each .service-card is one manpower solution category. The
-       color on each icon circle is set via a modifier class
-       (service-card--green / --orange / --blue / --purple / --teal / --red)
-       -- see the color list in css/style.css if you want to change one, or
-       add a 7th card with a new modifier of your own. -->
   <section class="section section--dim" id="services">
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">What We Offer</span>
-        <h2>Reliable manpower solutions for every industry</h2>
-        <p>Strellas Labor Service Cooperative provides skilled, dependable, and cost-effective manpower solutions to help your business operate efficiently and achieve sustainable growth.</p>
+        <h2>The right support.<br>For the work you do.</h2>
+        <p>From the field to the factory floor, find dependable manpower support for your day-to-day operations.</p>
       </div>
 
       <div class="services-grid">
@@ -223,8 +201,9 @@
           </span>
           <h3>Agricultural</h3>
           <span class="service-kicker">Manpower Solutions</span>
-          <p>Skilled manpower for plantation, farm, and agri-business operations, helping you achieve higher productivity and a sustainable harvest.</p>
+          <p>Farm and plantation workers to support your day-to-day agricultural operations.</p>
           <div class="service-features"><span>Skilled Farm Workers</span><span>Higher Productivity</span><span>Sustainable Harvest</span></div>
+        <a class="text-link service-link" href="#contact" data-inquiry="Agricultural manpower inquiry">Discuss your needs <span aria-hidden="true">&nearr;</span></a>
         </article>
 
         <article class="service-card service-card--orange">
@@ -234,8 +213,9 @@
           </span>
           <h3>Manufacturing</h3>
           <span class="service-kicker">Food &amp; Non-Food</span>
-          <p>Production support for food and non-food industries, providing reliable and skilled manpower to keep your operations running efficiently.</p>
+          <p>Production personnel for food and non-food manufacturing operations.</p>
           <div class="service-features"><span>Skilled Production Workers</span><span>Quality Output</span><span>Flexible Deployment</span></div>
+        <a class="text-link service-link" href="#contact" data-inquiry="Manufacturing manpower inquiry">Discuss your needs <span aria-hidden="true">&nearr;</span></a>
         </article>
 
         <article class="service-card service-card--blue">
@@ -245,8 +225,9 @@
           </span>
           <h3>Industrial / Plantation</h3>
           <span class="service-kicker">Manpower Solutions</span>
-          <p>Support for industrial operations and large-scale plantation projects, delivering skilled manpower for safe, efficient, and productive operations.</p>
+          <p>Manpower support for industrial sites and large-scale plantation projects.</p>
           <div class="service-features"><span>Skilled Industrial Workers</span><span>Safety &amp; Compliance</span><span>Project Support</span></div>
+        <a class="text-link service-link" href="#contact" data-inquiry="Industrial / Plantation manpower inquiry">Discuss your needs <span aria-hidden="true">&nearr;</span></a>
         </article>
 
         <article class="service-card service-card--purple">
@@ -256,8 +237,9 @@
           </span>
           <h3>Commercial &amp; Merchandising</h3>
           <span class="service-kicker">Manpower Solutions</span>
-          <p>Sales support, store operations, and merchandising personnel, helping your business connect with customers and grow in the market.</p>
+          <p>Sales, store operations, and merchandising personnel for your business.</p>
           <div class="service-features"><span>Store &amp; Sales Support</span><span>Merchandising Personnel</span><span>Customer Service</span></div>
+        <a class="text-link service-link" href="#contact" data-inquiry="Commercial &amp; Merchandising manpower inquiry">Discuss your needs <span aria-hidden="true">&nearr;</span></a>
         </article>
 
         <article class="service-card service-card--teal">
@@ -267,8 +249,9 @@
           </span>
           <h3>Utility &amp; Facility Maintenance</h3>
           <span class="service-kicker">Manpower Solutions</span>
-          <p>Maintenance, cleaning, and facility support services, keeping your facilities safe, clean, and fully operational.</p>
+          <p>Cleaning, maintenance, and facility support to keep your workplace running.</p>
           <div class="service-features"><span>Maintenance Technicians</span><span>Cleaning Personnel</span><span>Facility Support</span></div>
+        <a class="text-link service-link" href="#contact" data-inquiry="Utility &amp; Facility Maintenance manpower inquiry">Discuss your needs <span aria-hidden="true">&nearr;</span></a>
         </article>
 
         <article class="service-card service-card--red">
@@ -278,14 +261,14 @@
           </span>
           <h3>Drivers &amp; Administrative Staffing</h3>
           <span class="service-kicker">Manpower Solutions</span>
-          <p>Drivers, clerical, and back-office support for your operations -- reliable people to keep your business moving forward.</p>
+          <p>Licensed drivers, clerical staff, and back-office support for your operations.</p>
           <div class="service-features"><span>Licensed Drivers</span><span>Clerical Staff</span><span>Administrative Support</span></div>
+        <a class="text-link service-link" href="#contact" data-inquiry="Drivers &amp; Administrative Staffing manpower inquiry">Discuss your needs <span aria-hidden="true">&nearr;</span></a>
         </article>
       </div>
     </div>
   </section>
 
-  <!-- ============================ WHY CHOOSE STRELLAS ========================== -->
   <section class="section" id="why-strellas">
     <div class="wrap">
       <div class="section-head">
@@ -337,80 +320,26 @@
           </span>
           <div>
             <h4>Proven Experience</h4>
-            <p>17+ years in labor service, including agricultural, commercial, and industrial sectors.</p>
+            <p>Serving businesses since 2009, including agricultural, commercial, and industrial sectors.</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ============================ VISION / MISSION / VALUES =================== -->
-  <section class="section section--dim" id="foundation">
+  <section class="section section--dim" id="how-it-works">
     <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">Our Foundation</span>
-        <h2>Vision, Mission &amp; Core Values</h2>
-      </div>
-
-      <div class="about-grid">
-        <div>
-          <h3 style="margin-bottom:0.5rem;">Vision</h3>
-          <!-- EDIT HERE: vision statement -->
-          <p style="color:#3c463f;">Strellas is a law-abiding and reliable Labor Service Provider in the Philippines, exemplifying fairness and justice in its dealing with clients, member-employees, and the community.</p>
-        </div>
-        <div>
-          <h3 style="margin-bottom:0.5rem;">Mission</h3>
-          <!-- EDIT HERE: mission statement -->
-          <p style="color:#3c463f;">To engage in the supply of labor service and ensure continuous employment opportunities for its member-employees.</p>
-          <br>
-          <p style="color:#3c463f;">Ensuring the viability of Cooperatives through the utilization of new
-technologies and promoting self-employment as an engine for economic growth.</p>
-        </div>
-      </div>
-
-      <!-- Core Values -- 4 cards spelling S-L-S-C, the Cooperative's own
-           initials. EDIT HERE: wording only; keep the 4 cards in this
-           S / L / S / C order -- on desktop/tablet they read left-to-right
-           then top-to-bottom (S, L on top row / S, C on bottom row); on
-           phones the grid becomes a single column, so they stack in this
-           exact order top to bottom: S, L, S, C.
-           Each card's icon is a small hand-drawn SVG (not an image file),
-           so it stays crisp at any size and needs no separate asset. -->
-      <div class="values-grid">
-        <div class="value-card">
-          <span class="value-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17 L9 11 L13 15 L21 7"/><path d="M15 7 H21 V13"/></svg>
-          </span>
-          <span class="value-letter">S</span>
-          <span class="value-text"><p>Self-help and Self-responsibility</p></span>
-        </div>
-        <div class="value-card">
-          <span class="value-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L20 6 V11 C20 16 16.5 19.5 12 21 C7.5 19.5 4 16 4 11 V6 Z"/><path d="M9 12 L11 14 L15.5 9.5"/></svg>
-          </span>
-          <span class="value-letter">L</span>
-          <span class="value-text"><p>Labor Service Quality</p></span>
-        </div>
-        <div class="value-card">
-          <span class="value-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/></svg>
-          </span>
-          <span class="value-letter">S</span>
-          <span class="value-text"><p>Solidarity</p></span>
-        </div>
-        <div class="value-card">
-          <span class="value-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="3"/><path d="M6 21 C6 16.5 8.5 14 12 14 C15.5 14 18 16.5 18 21"/><circle cx="4" cy="9" r="2.2"/><path d="M1 20 C1 17 2.2 15.3 4 15.3"/><circle cx="20" cy="9" r="2.2"/><path d="M23 20 C23 17 21.8 15.3 20 15.3"/></svg>
-          </span>
-          <span class="value-letter">C</span>
-          <span class="value-text"><p>Cooperativism</p></span>
-        </div>
-      </div>
-      <p class="values-note">S &middot; L &middot; S &middot; C &mdash; Strellas Labor Service Cooperative</p>
+      <div class="section-head"><span class="eyebrow">For your business</span><h2>Let&rsquo;s get to work.</h2><p>Start a conversation about the people your operation needs.</p></div>
+      <ol class="process-grid">
+        <li><span class="step-number">01</span><h3>Tell us what you need</h3><p>Share your industry, location, roles, and workforce requirements.</p></li>
+        <li><span class="step-number">02</span><h3>Discuss the right support</h3><p>Our team will discuss your requirements and the available manpower services.</p></li>
+        <li><span class="step-number">03</span><h3>Plan the next steps</h3><p>Work with your local Strellas team on an approach that fits your operation.</p></li>
+      </ol>
+      <a class="btn btn--gold" href="#contact" data-inquiry="Manpower request">Start a manpower inquiry <span aria-hidden="true">&nearr;</span></a>
     </div>
   </section>
 
-  <!-- ================== PHOTO GALLERY (from Google Sheet) =================== -->
+
   <section class="section" id="gallery">
     <div class="wrap">
       <div class="section-head">
@@ -427,63 +356,31 @@ technologies and promoting self-employment as an engine for economic growth.</p>
     </div>
   </section>
 
-  <!-- =========================== RECENT ACTIVITIES ============================ -->
-  <!-- Hidden by default (see the "hidden" attribute below) -- js/sheet-data.js
-       only un-hides this section once there's at least one row in the
-       "activities" Google Sheet tab, so visitors never see an awkward
-       "nothing here yet" placeholder. Setup steps are in the big comment
-       block above ACTIVITIES_CONFIG in js/sheet-data.js. -->
   <section class="section" id="activities" hidden>
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">Recent Activities</span>
-        <h2>What we've been up to</h2>
+        <h2>Life at Strellas</h2>
         <p>Trainings, community events, and milestones from the Cooperative.</p>
       </div>
       <div class="activities-grid" id="activities-grid"></div>
     </div>
   </section>
 
-  <!-- =============================== MEMBERSHIP ================================ -->
-  <section class="section section--dim" id="membership">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">Cooperative Membership</span>
-        <h2>Two membership categories</h2>
-        <p>The Cooperative recognizes two membership categories for participation and capital build-up.</p>
-      </div>
-
-      <!-- EDIT HERE: membership descriptions -->
-      <div class="people-grid">
-        <div class="people-card">
-          <div class="icon" aria-hidden="true">01</div>
-          <h4>Regular Members</h4>
-          <p>Members who satisfy the prescribed pre-membership training, fees, and share capital requirements (at least &#8369;12,500, equivalent to 125 shares).</p>
-        </div>
-        <div class="people-card">
-          <div class="icon" aria-hidden="true">02</div>
-          <h4>Associate Members</h4>
-          <p>Members who complete the membership education seminar, pay a one-time &#8369;500 fee, and join the capital build-up program.</p>
-        </div>
-
-        <!--
-        <div class="people-card">
-          <div class="icon" aria-hidden="true">03</div>
-          <h4>Continuous employment</h4>
-          <p>The Cooperative offers continuous employment to employee-members willing to be assigned to another location, plus share capital build-up support.</p>
-        </div>
-        -->
-      </div>
+  <section class="section opportunities-section" id="opportunities">
+    <div class="wrap opportunities-layout">
+      <div><span class="eyebrow">For people looking for work</span><h2>Your next opportunity<br>starts with a conversation.</h2><p>Ask our team about available opportunities and requirements in your area. Share your preferred role and location so we can direct your inquiry.</p><a class="btn btn--gold" href="#contact" data-inquiry="Employment inquiry">Ask about opportunities <span aria-hidden="true">&nearr;</span></a></div>
+      <aside><span class="eyebrow">Cooperative membership</span><h3>Understand the next step.</h3><p>Employment inquiries and cooperative membership are different processes. Learn about the membership categories, share capital, and requirements before deciding.</p><a class="text-link" href="#membership">Read membership information <span aria-hidden="true">&nearr;</span></a></aside>
     </div>
   </section>
 
-  <!-- ============================== BRANCHES ================================ -->
+
   <section class="section section--dark" id="branches">
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">Where we operate</span>
-        <h2>Head Office in Davao, plus branch offices across Mindanao &amp; Visayas</h2>
-        <p>There are 7 branch offices in addition to the Head Office.</p>
+        <h2>Closer to your business.<br>Closer to your community.</h2>
+        <p>Find your nearest Strellas office across Mindanao and the Visayas. Select an office for its location and directions.</p>
       </div>
 
       <div class="branches-layout">
@@ -566,8 +463,117 @@ technologies and promoting self-employment as an engine for economic growth.</p>
     </div>
   </section>
 
-  <!-- =========================== COOPERATIVE OFFICERS ========================== -->
-  <section class="section" id="board">
+  <section class="section" id="about">
+    <div class="wrap about-grid">
+      <div>
+        <span class="eyebrow">Cooperative Profile</span>
+        <h2>Rooted in cooperation.<br>Built around people.</h2>
+      </div>
+      <!-- EDIT HERE: company description -->
+      <div class="about-copy">
+        <p>Founded by 24 professionals and Davao residents, Strellas connects businesses with dependable manpower and helps member-employees build sustainable livelihoods.</p>
+        <p>Registered with the CDA in November 2008, our cooperative began operations in 2009 and is led by experienced HR practitioners.</p>
+        <a class="text-link" href="#membership">Explore cooperative membership <span aria-hidden="true">&nearr;</span></a>
+      </div>
+    </div>
+    <div class="wrap cooperative-details">
+      <details><summary>Our story &amp; cooperative history</summary><div class="detail-copy"><p>Strellas was registered in November 2008 and re-registered on December 28, 2009. Operations began on March 16, 2009 in Cagayan de Oro, supporting banana farms in Talakag, Baungon, and Libona.</p><p>Management is led by three HR practitioners, retired from their respective organizations and fully engaged with the cooperative. Other cooperators assist with management, recruitment, and marketing.</p><p>On January 28, 2020, the CDA approved the change of name from Strellas Multi-Purpose Cooperative to Strellas Labor Service Cooperative.</p></div></details>
+      <details><summary>Vision, mission & core values</summary>  <section class="section section--dim" id="foundation">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Our Foundation</span>
+        <h2>Vision, Mission &amp; Core Values</h2>
+      </div>
+
+      <div class="about-grid">
+        <div>
+          <h3 style="margin-bottom:0.5rem;">Vision</h3>
+          <!-- EDIT HERE: vision statement -->
+          <p style="color:#3c463f;">Strellas is a law-abiding and reliable Labor Service Provider in the Philippines, exemplifying fairness and justice in its dealing with clients, member-employees, and the community.</p>
+        </div>
+        <div>
+          <h3 style="margin-bottom:0.5rem;">Mission</h3>
+          <!-- EDIT HERE: mission statement -->
+          <p style="color:#3c463f;">To engage in the supply of labor service and ensure continuous employment opportunities for its member-employees.</p>
+          <br>
+          <p style="color:#3c463f;">Ensuring the viability of Cooperatives through the utilization of new
+technologies and promoting self-employment as an engine for economic growth.</p>
+        </div>
+      </div>
+
+      <!-- Core Values -- 4 cards spelling S-L-S-C, the Cooperative's own
+           initials. EDIT HERE: wording only; keep the 4 cards in this
+           S / L / S / C order -- on desktop/tablet they read left-to-right
+           then top-to-bottom (S, L on top row / S, C on bottom row); on
+           phones the grid becomes a single column, so they stack in this
+           exact order top to bottom: S, L, S, C.
+           Each card's icon is a small hand-drawn SVG (not an image file),
+           so it stays crisp at any size and needs no separate asset. -->
+      <div class="values-grid">
+        <div class="value-card">
+          <span class="value-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17 L9 11 L13 15 L21 7"/><path d="M15 7 H21 V13"/></svg>
+          </span>
+          <span class="value-letter">S</span>
+          <span class="value-text"><p>Self-help and Self-responsibility</p></span>
+        </div>
+        <div class="value-card">
+          <span class="value-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L20 6 V11 C20 16 16.5 19.5 12 21 C7.5 19.5 4 16 4 11 V6 Z"/><path d="M9 12 L11 14 L15.5 9.5"/></svg>
+          </span>
+          <span class="value-letter">L</span>
+          <span class="value-text"><p>Labor Service Quality</p></span>
+        </div>
+        <div class="value-card">
+          <span class="value-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/></svg>
+          </span>
+          <span class="value-letter">S</span>
+          <span class="value-text"><p>Solidarity</p></span>
+        </div>
+        <div class="value-card">
+          <span class="value-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="3"/><path d="M6 21 C6 16.5 8.5 14 12 14 C15.5 14 18 16.5 18 21"/><circle cx="4" cy="9" r="2.2"/><path d="M1 20 C1 17 2.2 15.3 4 15.3"/><circle cx="20" cy="9" r="2.2"/><path d="M23 20 C23 17 21.8 15.3 20 15.3"/></svg>
+          </span>
+          <span class="value-letter">C</span>
+          <span class="value-text"><p>Cooperativism</p></span>
+        </div>
+      </div>
+      <p class="values-note">S &middot; L &middot; S &middot; C &mdash; Strellas Labor Service Cooperative</p>
+    </div>
+  </section></details>
+<details><summary>Cooperative membership</summary>  <section class="section section--dim" id="membership">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Cooperative Membership</span>
+        <h2>Two membership categories</h2>
+        <p>The Cooperative recognizes two membership categories for participation and capital build-up.</p>
+      </div>
+
+      <!-- EDIT HERE: membership descriptions -->
+      <div class="people-grid">
+        <div class="people-card">
+          <div class="icon" aria-hidden="true">01</div>
+          <h4>Regular Members</h4>
+          <p>Members who satisfy the prescribed pre-membership training, fees, and share capital requirements (at least &#8369;12,500, equivalent to 125 shares).</p>
+        </div>
+        <div class="people-card">
+          <div class="icon" aria-hidden="true">02</div>
+          <h4>Associate Members</h4>
+          <p>Members who complete the membership education seminar, pay a one-time &#8369;500 fee, and join the capital build-up program.</p>
+        </div>
+
+        <!--
+        <div class="people-card">
+          <div class="icon" aria-hidden="true">03</div>
+          <h4>Continuous employment</h4>
+          <p>The Cooperative offers continuous employment to employee-members willing to be assigned to another location, plus share capital build-up support.</p>
+        </div>
+        -->
+      </div>
+    </div>
+  </section></details>
+<details><summary>Our cooperative officers</summary>  <section class="section" id="board">
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">Leadership</span>
@@ -603,10 +609,8 @@ technologies and promoting self-employment as an engine for economic growth.</p>
         </div>
       </div>
     </div>
-  </section>
-
-  <!-- =========================== ORGANIZATIONAL STRUCTURE ========================= -->
-  <section class="section section--dark" id="philosophy">
+  </section></details>
+<details><summary>How the cooperative is governed</summary>  <section class="section" id="philosophy">
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">Organizational Structure</span>
@@ -638,15 +642,17 @@ technologies and promoting self-employment as an engine for economic growth.</p>
         </div>
       </div>
     </div>
+  </section></details>
+    </div>
   </section>
 
-  <!-- =============================== CONTACT ================================ -->
   <section class="section" id="contact">
     <div class="wrap contact-layout">
       <div class="contact-info">
         <span class="eyebrow">Contact Us</span>
-        <h2>Reach the Strellas Head Office</h2>
+        <h2>How can we help?</h2>
 
+        <p class="contact-intro">Tell us what you need. Our head office can help direct your business, employment, or membership inquiry.</p>
         <!-- EDIT HERE: contact details -->
         <div class="item">
           <div class="label">Address</div>
@@ -654,12 +660,12 @@ technologies and promoting self-employment as an engine for economic growth.</p>
         </div>
         <div class="item">
           <div class="label">Telephone</div>
-          <div>(082) 222-3660</div>
+          <div><a href="tel:+63822223660">(082) 222-3660</a></div>
         </div>
         <div class="item">
           <div class="label">Email</div>
           <!-- Not confirmed in the source deck -- verify before publishing -->
-          <div>strellas_davaomain@outlook.com</div>
+          <div><a href="mailto:strellas_davaomain@outlook.com">strellas_davaomain@outlook.com</a></div>
         </div>
       </div>
 
@@ -674,19 +680,19 @@ technologies and promoting self-employment as an engine for economic growth.</p>
       <form class="contact-form" id="contact-form" action="/api/submit" method="POST">
         <div>
           <label for="name">Name *</label>
-          <input type="text" id="name" name="name" required>
+          <input type="text" id="name" name="name" autocomplete="name" required>
         </div>
         <div>
           <label for="email">Email *</label>
-          <input type="email" id="email" name="email" required>
+          <input type="email" id="email" name="email" autocomplete="email" required>
         </div>
         <div>
           <label for="subject">Subject</label>
           <input type="text" id="subject" name="subject">
         </div>
         <div>
-          <label for="message">Message</label>
-          <textarea id="message" name="message"></textarea>
+          <label for="message">Message *</label>
+          <textarea id="message" name="message" rows="5" placeholder="For manpower: roles, headcount, and location. For employment: preferred role and location." required></textarea>
         </div>
         <div class="form-captcha">
           <!-- ALTCHA -- free, open-source, privacy-friendly captcha widget.
@@ -708,7 +714,7 @@ technologies and promoting self-employment as an engine for economic growth.</p>
   <div class="wrap">
     <div class="footer-grid">
       <div>
-        <img src="assets/logo-full.png" alt="Strellas Labor Service Cooperative logo" style="height:40px; margin-bottom:1rem;">
+        <img src="assets/logo-full.png" alt="Strellas Labor Service Cooperative logo" style="height:40px; margin-bottom:1rem; background:white; padding:4px;">
         <p>CDA-registered labor service cooperative supplying labor service and continuous employment to member-employees across Mindanao and the Visayas since 2008.</p>
       </div>
       <div>
@@ -725,7 +731,8 @@ technologies and promoting self-employment as an engine for economic growth.</p>
         <h4>Follow</h4>
         <ul>
           <li><a href="https://www.facebook.com/strellaslaborservicecooperative">Facebook</a></li>
-          <li><a href="#">Instagram</a></li>
+          <li><a href="#opportunities">Employment inquiries</a></li>
+          <li><a href="#membership">Membership information</a></li>
         </ul>
       </div>
     </div>
@@ -758,7 +765,7 @@ technologies and promoting self-employment as an engine for economic growth.</p>
 </div>
 
 <script async defer src="https://cdn.jsdelivr.net/npm/altcha/dist/altcha.min.js" type="module"></script>
-<script src="js/sheet-data.js"></script>
-<script src="js/main.js"></script>
+<script src="js/sheet-data.js?v=3"></script>
+<script src="js/main.js?v=3"></script>
 </body>
 </html>

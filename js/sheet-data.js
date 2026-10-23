@@ -14,9 +14,10 @@
         category | title | image_url | caption | order
 
       - category   : which part of the site the image belongs to. Use one of:
-                      "hero", "family", "gallery", "branch"
+                      "hero", "family", "gallery", "branch", "client"
                       (You can add more categories -- see CATEGORY MAP below.)
-      - title      : short internal name, not shown on the page (optional)
+      - title      : short internal name (optional for photos). For client
+                      rows, the approved company name is required as logo alt text.
       - image_url  : a DIRECT link to the image file (must end up rendering
                       an actual image when opened in a new tab). The easiest
                       source is to upload the image to Google Drive, right
@@ -147,6 +148,7 @@ const CATEGORY_MAP = {
   family: { containerId: "family-gallery", mode: "grid" },
   gallery: { containerId: "main-gallery", mode: "grid" },
   branch: { containerId: "branch-photo-grid", mode: "grid" },
+  client: { containerId: "client-logos", mode: "logos" },
 };
 
 /**
@@ -221,6 +223,16 @@ function withCacheBust(url, version) {
   if (!url || !version) return url;
   const separator = url.includes("?") ? "&" : "?";
   return `${url}${separator}_cb=${version}`;
+}
+
+/** Client rows use title for the approved company name and image_url for its logo. */
+function renderClientLogos(container, rows, cacheVersion) {
+  const clients = rows.filter((row) => row.title && /^https?:\/\//i.test(row.image_url || ""));
+  container.innerHTML = clients.map((row) => `<li><img src="${escapeHtml(withCacheBust(row.image_url, cacheVersion))}" alt="${escapeHtml(row.title)}" width="600" height="300" loading="lazy"></li>`).join("");
+  const section = document.getElementById("clients");
+  const navItem = document.getElementById("clients-nav");
+  if (section) section.hidden = !clients.length;
+  if (navItem) navItem.hidden = !clients.length;
 }
 
 /** Fetches and caches the sheet CSV, returning { rows, fetchedAt }.
@@ -334,6 +346,7 @@ function buildPhotoFigureHtml(images, fallbackAlt) {
  *  while the pointer stays over it, resetting back to the first photo on
  *  mouse-out. Shared by the main gallery/branch grids and activity cards. */
 function wireHoverCycle(container) {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   container.querySelectorAll("figure[data-images]").forEach((figure) => {
     let images;
     try {
@@ -490,13 +503,12 @@ function setupViewMore(container) {
 function renderBackground(container, rows, cacheVersion) {
   if (!rows.length) return; // keep the CSS gradient fallback already in place
   container.style.backgroundImage = `url("${withCacheBust(rows[0].image_url, cacheVersion)}")`;
-  container.style.opacity = "0.45";
 }
 
 function escapeHtml(str) {
   const div = document.createElement("div");
   div.textContent = str || "";
-  return div.innerHTML;
+  return div.innerHTML.replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 
 /** Fetches and caches a published sheet CSV at any URL, returning
@@ -615,6 +627,13 @@ function buildMapLinkUrl(query) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 }
 
+/** Phone numbers are separate links so calling never triggers branch selection. */
+function branchContacts(address) {
+  const phoneParts = address.split("|").filter((part) => /tel|mobile|phone/i.test(part));
+  const numbers = phoneParts.flatMap((part) => part.match(/(?:\(\+?\d{2,4}\)|\+?\d)[\d\s()-]{7,}\d/g) || []);
+  return numbers.map((number) => `<a href="tel:${number.replace(/[^+\d]/g, "")}">${escapeHtml(number.trim())}</a>`).join("");
+}
+
 /** Renders the branch list + wires up clicks to swap the embedded map. */
 function renderBranches(rows) {
   const listEl = document.getElementById("branch-list");
@@ -639,11 +658,11 @@ function renderBranches(rows) {
     .map((row, i) => {
       const kind = row.kind ? `<span class="kind">${escapeHtml(row.kind)}</span>` : "";
       const active = i === 0 ? " is-active" : "";
-      return `<button type="button" class="branch-entry${active}" data-query="${escapeHtml(row.mapQuery)}">
+      return `<div class="branch-item"><button type="button" class="branch-entry${active}" aria-pressed="${i === 0}" data-query="${escapeHtml(row.mapQuery)}">
         ${kind}
         <h4>${escapeHtml(row.name)}</h4>
-        <p>${escapeHtml(row.address || "")}</p>
-      </button>`;
+        <p>${escapeHtml((row.address || "").split("|")[0].trim())}</p>
+      </button><div class="branch-contacts">${branchContacts(row.address || "")}</div></div>`;
     })
     .join("");
 
@@ -656,8 +675,12 @@ function renderBranches(rows) {
       linkEl.href = buildMapLinkUrl(query);
       linkEl.hidden = false;
     }
-    listEl.querySelectorAll(".branch-entry").forEach((el) => el.classList.remove("is-active"));
+    listEl.querySelectorAll(".branch-entry").forEach((el) => {
+      el.classList.remove("is-active");
+      el.setAttribute("aria-pressed", "false");
+    });
     btn.classList.add("is-active");
+    btn.setAttribute("aria-pressed", "true");
   };
 
   listEl.querySelectorAll(".branch-entry").forEach((btn) => {
@@ -722,7 +745,8 @@ async function initBranchMap() {
                       1, 1.1, 1.2   -> one activity, 3 photos
                       2             -> a separate activity, 1 photo (or 0,
                                        if you leave image_url blank)
-                    The card with the lowest order shows first. For the
+                    Cards show newest dates first, with undated cards last.
+                    Order still controls photo grouping and breaks date ties. For the
                     "1.1"/"1.2" extra-photo rows, only image_url (and
                     optionally blurb, as a caption) are needed -- leave
                     date/title blank on those, they're not used.
@@ -749,6 +773,21 @@ const ACTIVITIES_CONFIG = {
   // -------------------------------------------------------------------------
 };
 
+// English display dates may include a day range; sort by its first day.
+function activityDateValue(date) {
+  const text = date || "";
+  const value = Date.parse(/^\d{4}-\d{2}-\d{2}$/.test(text) ? text : text.replace(/(\d{1,2})\s*[-–]\s*\d{1,2}/, "$1"));
+  return Number.isNaN(value) ? -Infinity : value;
+}
+
+function sortActivityGroups(groups) {
+  return groups.slice().sort((a, b) => {
+    const aDate = activityDateValue(a.items[0].date);
+    const bDate = activityDateValue(b.items[0].date);
+    return aDate === bDate ? a.minOrder - b.minOrder : bDate - aDate;
+  });
+}
+
 /** Renders the activities feed and un-hides the section (only if there's
  *  at least one activity -- see the big comment above ACTIVITIES_CONFIG).
  *
@@ -767,7 +806,7 @@ function renderActivities(rows, cacheVersion) {
   const grid = document.getElementById("activities-grid");
   if (!section || !grid) return;
 
-  const groups = groupRowsByOrder(rows).filter((group) => group.items[0].title);
+  const groups = sortActivityGroups(groupRowsByOrder(rows).filter((group) => group.items[0].title));
   if (!groups.length) return; // section stays hidden -- nothing to show yet
 
   grid.innerHTML = groups
@@ -838,10 +877,12 @@ async function initSheetImages() {
       if (!container) return; // this category isn't used on this page -- fine
 
       const rowsForCategory = sortByOrder(
-        rows.filter((r) => r.category.toLowerCase() === category)
+        rows.filter((r) => (r.category || "").toLowerCase() === category)
       );
 
-      if (config.mode === "grid") {
+      if (config.mode === "logos") {
+        renderClientLogos(container, rowsForCategory, fetchedAt);
+      } else if (config.mode === "grid") {
         renderGrid(container, rowsForCategory, fetchedAt);
       } else if (config.mode === "background") {
         renderBackground(container, rowsForCategory, fetchedAt);
