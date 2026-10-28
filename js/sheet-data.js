@@ -14,7 +14,7 @@
         category | title | image_url | caption | order
 
       - category   : which part of the site the image belongs to. Use one of:
-                      "hero", "family", "gallery", "branch", "client"
+                      "hero", "highlight", "family", "gallery", "branch", "client"
                       (You can add more categories -- see CATEGORY MAP below.)
       - title      : short internal name (optional for photos). For client
                       rows, the approved company name is required as logo alt text.
@@ -145,6 +145,7 @@ const BRANCH_CONFIG = {
    sheet and a matching container `id` in index.html. */
 const CATEGORY_MAP = {
   hero: { containerId: "hero-photo-target", mode: "background" },
+  highlight: { containerId: "highlight-photo", mode: "highlight" },
   family: { containerId: "family-gallery", mode: "grid" },
   gallery: { containerId: "main-gallery", mode: "grid" },
   branch: { containerId: "branch-photo-grid", mode: "grid" },
@@ -497,6 +498,23 @@ function setupViewMore(container) {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(applyCollapse, 150);
   });
+}
+
+/** Swap only after loading succeeds, so a broken sheet image keeps the fallback. */
+function renderHighlight(container, rows, cacheVersion) {
+  const row = rows.find((row) => /^https?:\/\//i.test(row.image_url || ""));
+  if (!row) return;
+  const image = container.querySelector("img");
+  const caption = container.querySelector("figcaption > span:last-child");
+  if (!image || !caption) return;
+
+  const preview = new Image();
+  preview.onload = () => {
+    image.src = preview.src;
+    image.alt = row.title || row.caption || "Strellas team";
+    caption.textContent = row.caption || row.title || "Strellas LSC";
+  };
+  preview.src = withCacheBust(row.image_url, cacheVersion);
 }
 
 /** Sets the first matching row's image as a CSS background (used for the hero). */
@@ -880,7 +898,9 @@ async function initSheetImages() {
         rows.filter((r) => (r.category || "").toLowerCase() === category)
       );
 
-      if (config.mode === "logos") {
+      if (config.mode === "highlight") {
+        renderHighlight(container, rowsForCategory, fetchedAt);
+      } else if (config.mode === "logos") {
         renderClientLogos(container, rowsForCategory, fetchedAt);
       } else if (config.mode === "grid") {
         renderGrid(container, rowsForCategory, fetchedAt);
