@@ -26,7 +26,7 @@ The client section and its navigation link stay hidden until a client row has bo
 
 ## Other content
 
-The hero uses the existing Davao team photo. Replace its image URL and alt text together in `index.html` if you choose another team photo.
+The large “The people behind the service” photo uses the first valid `highlight` row by `order` in the same image sheet. Set `image_url` to a direct public Google Drive image URL, `title` to its accessible image description, and `caption` to the team or location label. The small heading and “One cooperative. A shared commitment.” text stay unchanged. The existing Davao photo is a fallback when the row is missing or the new image fails to load. Updates follow the same 10-minute sheet cache as gallery photos; no rebuild is needed. The separate `hero` category still controls the background behind the headline.
 
 Activities now appear newest first, with the existing `order` column still grouping photos and breaking date ties. Prefer ISO dates (`2026-09-22`) or English month dates (`September 22, 2026`); English day ranges such as `September 22-24, 2026` sort by the first day. Unrecognized or blank dates appear last.
 

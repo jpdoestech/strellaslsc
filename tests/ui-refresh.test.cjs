@@ -9,7 +9,11 @@ const elements = {
   clients: { hidden: true },
   'clients-nav': { hidden: true },
 };
+const pendingImages = [];
 const context = vm.createContext({
+  Image: class {
+    constructor() { pendingImages.push(this); }
+  },
   document: {
     addEventListener() {},
     getElementById: (id) => elements[id],
@@ -22,6 +26,29 @@ const context = vm.createContext({
   },
 });
 vm.runInContext(fs.readFileSync(path.join(root, 'js/sheet-data.js'), 'utf8'), context);
+
+test('highlight uses the first valid ordered row after loading, retaining fallback on failure', () => {
+  const image = { src: 'fallback.jpg', alt: 'Fallback team' };
+  const caption = { textContent: 'Fallback caption' };
+  const container = { querySelector: (selector) => selector === 'img' ? image : caption };
+  context.renderHighlight(container, [], 123);
+  context.renderHighlight(container, [{ image_url: 'javascript:alert(1)' }], 123);
+  assert.equal(pendingImages.length, 0);
+  const rows = context.sortByOrder([
+    { order: '2', image_url: 'https://example.com/later.jpg', title: 'Later team' },
+    { order: '1', image_url: 'https://example.com/chosen.jpg', title: 'Chosen team', caption: '<Team caption>' },
+  ]);
+  context.renderHighlight(container, rows, 123);
+  assert.equal(image.src, 'fallback.jpg', 'Do not replace before a successful load');
+  assert.equal(pendingImages[0].src, 'https://example.com/chosen.jpg?_cb=123');
+  pendingImages[0].onload();
+  assert.equal(image.src, 'https://example.com/chosen.jpg?_cb=123');
+  assert.equal(image.alt, 'Chosen team');
+  assert.equal(caption.textContent, '<Team caption>', 'Caption is text, not injected HTML');
+  context.renderHighlight(container, [{ image_url: 'https://example.com/broken.jpg' }], 124);
+  assert.equal(image.alt, 'Chosen team', 'An image that never loads leaves current content intact');
+  assert.equal(caption.textContent, '<Team caption>');
+});
 
 test('client showcase hides empty/unsafe rows and escapes company names and URLs', () => {
   const container = { innerHTML: '' };
